@@ -125,7 +125,7 @@ function schedule_mail(_id) {
 			
 			for (var i = 0; i < suites.length; i++) {
 				if (suites[i].schedule != "none" && suites[i].history[0].status.failed != 0) {
-					var link = 'http://localhost:4200/dashboard/suites/' + suites[i].name + '/history/' + suites[i].history[0].id;
+					var link = 'http://snf-750380.vm.okeanos.grnet.gr:8080/dashboard/suites/' + suites[i].name + '/history/' + suites[i].history[0].id;
 					var data = {
 						from: 'Web Recorder <postmaster@sandbox8e561dce537a4a5e8342b6344e691578.mailgun.org>',
 						to: user.email,
@@ -177,7 +177,7 @@ function forgotPassword(email) {
 		
 		if (user) {
 			var temp_pass = randomID(30, "aA0");
-			var link = 'http://localhost:4200/reset-password/' + temp_pass;
+			var link = 'http://snf-750380.vm.okeanos.grnet.gr:8080/reset-password/' + temp_pass;
 			var data = {
 				from: 'Web Recorder <postmaster@sandbox8e561dce537a4a5e8342b6344e691578.mailgun.org>',
 				to: user.email,
