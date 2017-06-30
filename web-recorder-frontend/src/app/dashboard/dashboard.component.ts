@@ -21,7 +21,11 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.postsService.getSuites(this.currentUser._id).subscribe(suites => { this.suites = suites; });
+    this.postsService.getSuites(this.currentUser._id).subscribe(suites => {
+      this.suites = suites.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
+    });
   }
 
   onClickListener(suite: string) {
@@ -33,7 +37,11 @@ export class DashboardComponent implements OnInit {
       this.postsService.createNewSuite(this.currentUser._id, this.newSuiteName).subscribe(data => {
         this.newSuiteName = '';
         this.message = '';
-        this.postsService.getSuites(this.currentUser._id).subscribe(suites => { this.suites = suites; });
+        this.postsService.getSuites(this.currentUser._id).subscribe(suites => {
+          this.suites = suites.sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+          });
+        });
       }, error => {
         this.message = error._body;
       });

@@ -26,7 +26,9 @@ export class TestsHistoryComponent implements OnInit {
   ngOnInit() {
     this.postsService.getSuiteTestsHistory(this.currentUser._id, this.suiteName, this.historyID).subscribe(history => {
       this.history = history;
-      this.tests = history.tests;
+      this.tests = history.tests.sort(function(a, b) {
+        return a.testName.localeCompare(b.testName);
+      });
     });
   }
 

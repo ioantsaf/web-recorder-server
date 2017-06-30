@@ -26,12 +26,17 @@ export class TestsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.postsService.getTests(this.currentUser._id, this.suiteName).subscribe(tests => { this.tests = tests; });
+    this.postsService.getTests(this.currentUser._id, this.suiteName).subscribe(tests => {
+      this.tests = tests.sort(function (a, b) {
+        return a.testName.localeCompare(b.testName);
+      });
+    });
+
     this.postsService.getSuiteHistory(this.currentUser._id, this.suiteName).subscribe(history => { this.history = history; });
   }
 
   onClickListener(test: string) {
-    this.router.navigate(['/dashboard/suites/' + this.suiteName + '/tests' , test]);
+    this.router.navigate(['/dashboard/suites/' + this.suiteName + '/tests', test]);
   }
 
   onClickHistory(id: string) {
@@ -46,7 +51,10 @@ export class TestsComponent implements OnInit {
       this.postsService.getTestResult(this.currentUser._id, this.suiteName, this.tests[i].testName).subscribe(result => {
         this.postsService.updateTestResult(this.currentUser._id, this.suiteName, this.tests[i].testName, result).subscribe(() => {
           this.postsService.getTests(this.currentUser._id, this.suiteName).subscribe(tests => {
-            this.tests = tests;
+            this.tests = tests.sort(function (a, b) {
+              return a.testName.localeCompare(b.testName);
+            });
+
             repeat++;
 
             if (repeat == this.tests.length) {
@@ -70,7 +78,9 @@ export class TestsComponent implements OnInit {
     this.postsService.getTestResult(this.currentUser._id, this.suiteName, testName).subscribe(result => {
       this.postsService.updateTestResult(this.currentUser._id, this.suiteName, testName, result).subscribe(() => {
         this.postsService.getTests(this.currentUser._id, this.suiteName).subscribe(tests => {
-          this.tests = tests;
+          this.tests = tests.sort(function (a, b) {
+            return a.testName.localeCompare(b.testName);
+          });
         });
       });
     });
@@ -79,11 +89,15 @@ export class TestsComponent implements OnInit {
   createNewTest() {
     if (this.newTestName !== undefined && this.newTestName !== '') {
       // tslint:disable-next-line:max-line-length
-      this.postsService.createNewTest(this.currentUser._id, {'suite_name': this.suiteName, 'test_name': this.newTestName, 'startUrl': this.newTestStartUrl}).subscribe(data => {
+      this.postsService.createNewTest(this.currentUser._id, { 'suite_name': this.suiteName, 'test_name': this.newTestName, 'startUrl': this.newTestStartUrl }).subscribe(data => {
         this.newTestName = '';
         this.newTestStartUrl = '';
         this.message = '';
-        this.postsService.getTests(this.currentUser._id, this.suiteName).subscribe(tests => { this.tests = tests; });
+        this.postsService.getTests(this.currentUser._id, this.suiteName).subscribe(tests => {
+          this.tests = tests.sort(function (a, b) {
+            return a.testName.localeCompare(b.testName);
+          });
+        });
       }, error => {
         this.message = error._body;
       });
