@@ -37,6 +37,8 @@
 <div class="container">
     <h1><b>Dashboard</b></h1>
     <p>Below is a full listing of your test suites.</p>
+    <h3 *ngIf="stats !== undefined"><span class="label label-primary">{{stats.suites}} Suites</span> <span class="label label-info">{{stats.tests}} Tests</span> <span class="label label-success">{{stats.passing}} Passing</span> <span class="label label-danger">{{stats.failing}} Failing</span>        <span class="label label-default">{{stats.not_tested}} Not Tested</span>
+    </h3>
     <hr>
 
     <table class="table">

@@ -17,6 +17,7 @@ export class TestSettingsComponent implements OnInit {
   oldTestName: string;
   testMessage: string;
   suiteMessage: string;
+  suites: any[];
 
   // tslint:disable-next-line:max-line-length
   constructor(private postsService: PostsService, private router: Router, route: ActivatedRoute, private authenticationService: AuthService) {
@@ -27,7 +28,13 @@ export class TestSettingsComponent implements OnInit {
     this.oldTestName = this.testName;
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.postsService.getSuiteNames(this.currentUser._id).subscribe(suites => {
+      this.suites = suites.sort(function (a, b) {
+            return a.localeCompare(b);
+      });
+    });
+  }
 
   deleteTest() {
     this.postsService.deleteTest(this.currentUser._id, this.suiteName, this.testName).subscribe(() => {

@@ -54,9 +54,17 @@
     </div>
     <hr>
 
-    <h2>Edit Steps</h2>
-    <p>Test steps allow you to perform actions within the browser. They are executed sequentially.</p>
-    <button class="btn btn-primary" (click)="addPrecondition()"><span class="glyphicon glyphicon-open" aria-hidden="true"></span> Add Precondition</button><br><br>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Edit Steps</h2>
+            <p>Test steps allow you to perform actions within the browser. They are executed sequentially.</p>
+            <button class="btn btn-primary" (click)="addPrecondition()"><span class="glyphicon glyphicon-open" aria-hidden="true"></span> Add Precondition</button><br><br>
+        </div>
+        <div class="col-md-4">
+            <br><br>
+            <input type="text" class="form-control" placeholder="Search steps..." [(ngModel)]="filter.id" (keyup)="changeValue();">
+        </div>
+    </div>
 
     <h3 *ngIf="preconditions != undefined && preconditions.length != 0">Preconditions</h3>
     <div class="panel panel-default" *ngFor="let pre of preconditions; let i=index">
@@ -81,17 +89,23 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
-                    <input type="text" class="form-control" [(ngModel)]="pre.suiteName" placeholder="Suite Name">
+                    <label>Suite Name</label>
+                    <select class="selectpicker form-control" [(ngModel)]="pre.suiteName" (change)="findTestPreconditionNames(pre.suiteName, i);">
+                        <option *ngFor="let suite of suites" [ngValue]="suite">{{suite}}</option>
+                    </select>
                 </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" [(ngModel)]="pre.testName" placeholder="Test Name">
+                <div class="col-md-6 form-group">
+                    <label>Test Name</label>
+                    <select class="selectpicker form-control" [(ngModel)]="pre.testName">
+                        <option *ngFor="let test of pre.tests" [ngValue]="test">{{test}}</option>
+                    </select>
                 </div>
             </div>
         </div>
     </div><br>
 
     <h3>Steps</h3>
-    <div class="panel panel-default" *ngFor="let t of testObject; let i=index">
+    <div class="panel panel-default" *ngFor="let t of testObject | searchSteps:filter; let i=index">
         <div class="panel-heading" *ngIf="t.type == 'get' && i == 0">
             <div class="row">
                 <div class="col-md-6" align="left">
@@ -152,6 +166,7 @@
                                 <option value="select">Select</option>
                                 <option value="keypress">Keypress</option>
                                 <option value="mouse-over">Mouse Over</option>
+                                <option value="pause">Pause (time in ms)</option>
                             </optgroup>
                             <optgroup label="Navigation">
                                 <option value="get">Go to URL</option>
@@ -174,11 +189,12 @@
                     <input type="text" class="form-control" [(ngModel)]="t.URL">
                 </div>
             </div>
+            <input type="text" class="form-control" placeholder="Add description..." [(ngModel)]="t.description" style="background-color: #edd3d3;">
         </div>
         <div class="panel-body" *ngIf="t.type == 'get' && i == 0">
             <input type="text" class="form-control" [(ngModel)]="t.URL">
         </div>
-        <div class="panel-body" *ngIf="t.type != 'get' && t.type != 'refresh'">
+        <div class="panel-body" *ngIf="t.type != 'get' && t.type != 'refresh' && t.type != 'pause'">
             <input type="text" class="form-control" placeholder="Identifier" [(ngModel)]="t.id"><br>
             <input type="text" class="form-control" placeholder="URL" [(ngModel)]="t.url"><br>
             <div class="row">
@@ -193,6 +209,7 @@
                                 <option value="select">Select</option>
                                 <option value="keypress">Keypress</option>
                                 <option value="mouse-over">Mouse Over</option>
+                                <option value="pause">Pause (time in ms)</option>
                             </optgroup>
                             <optgroup label="Navigation">
                                 <option value="get">Go to URL</option>
@@ -251,7 +268,8 @@
                 <div *ngIf="applyToAllMessage && applyToAllIndex == i && applyToAllStatus == 'fail'" style="color: red;" class="help-block">
                     {{applyToAllMessage}}
                 </div>
-            </div>
+            </div><br>
+            <input type="text" class="form-control" placeholder="Add description..." [(ngModel)]="t.description" style="background-color: #edd3d3;">
         </div>
         <div class="panel-body" *ngIf="t.type == 'refresh'">
             <div class="row">
@@ -266,6 +284,7 @@
                                 <option value="select">Select</option>
                                 <option value="keypress">Keypress</option>
                                 <option value="mouse-over">Mouse Over</option>
+                                <option value="pause">Pause (time in ms)</option>
                             </optgroup>
                             <optgroup label="Navigation">
                                 <option value="get">Go to URL</option>
@@ -285,8 +304,48 @@
                     </div>
                 </div>
             </div>
+            <input type="text" class="form-control" placeholder="Add description..." [(ngModel)]="t.description" style="background-color: #edd3d3;">
+        </div>
+        <div class="panel-body" *ngIf="t.type == 'pause'">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <select class="selectpicker form-control" [(ngModel)]="t.type" #type="ngModel">
+                            <optgroup label="Operations">
+                                <option value="click">Click</option>
+                                <option value="db-click">Double Click</option>
+                                <option value="right-click">Right Click</option>
+                                <option value="change">Assign</option>
+                                <option value="select">Select</option>
+                                <option value="keypress">Keypress</option>
+                                <option value="mouse-over">Mouse Over</option>
+                                <option value="pause">Pause (time in ms)</option>
+                            </optgroup>
+                            <optgroup label="Navigation">
+                                <option value="get">Go to URL</option>
+                                <option value="refresh">Refresh</option>
+                            </optgroup>
+                            <optgroup label="Assertions">
+                                <option value="present">Element is present</option>
+                                <option value="not-present">Element is not present</option>
+                                <option value="visible">Element is visible</option>
+                                <option value="not-visible">Element is not visible</option>
+                                <option value="text-equal">Element text equals</option>
+                                <option value="text-not-equal">Element text does not equal</option>
+                                <option value="text-contain">Element text contains</option>
+                                <option value="text-not-contain">Element text does not contain</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" placeholder="Input" [(ngModel)]="t.input">
+                </div>
+            </div>
+            <input type="text" class="form-control" placeholder="Add description..." [(ngModel)]="t.description" style="background-color: #edd3d3;">
         </div>
     </div>
+
     <button class="btn btn-primary" (click)="addStep()"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Step</button>&nbsp;
 
     <h3 *ngIf="postconditions !== undefined && postconditions.length !== 0"><br>Postconditions</h3>
@@ -312,10 +371,16 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
-                    <input type="text" class="form-control" [(ngModel)]="post.suiteName" placeholder="Suite Name">
+                    <label>Suite Name</label>
+                    <select class="selectpicker form-control" [(ngModel)]="post.suiteName" (change)="findTestPostconditionNames(post.suiteName, i);">
+                        <option *ngFor="let suite of suites" [ngValue]="suite">{{suite}}</option>
+                    </select>
                 </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" [(ngModel)]="post.testName" placeholder="Test Name">
+                <div class="col-md-6 form-group">
+                    <label>Test Name</label>
+                    <select class="selectpicker form-control" [(ngModel)]="post.testName">
+                        <option *ngFor="let test of post.tests" [ngValue]="test">{{test}}</option>
+                    </select>
                 </div>
             </div>
         </div>

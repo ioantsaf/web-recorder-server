@@ -69,6 +69,7 @@
                     <p>
                         <span class="glyphicon glyphicon-play" aria-hidden="true"></span><a (click)="runTest(test.testName, i)" style="cursor: pointer; color: grey;">Run Test</a>&nbsp;&nbsp;
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span><a [routerLink]="['/dashboard/suites/' + suiteName + '/tests/' + test.testName + '/edit']" style="color: grey;">Edit Steps</a>&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-copy" aria-hidden="true"></span><a (click)="duplicate(test.suiteName, test.testName)" style="cursor: pointer; color: grey;">Duplicate</a>&nbsp;&nbsp;
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span><a [routerLink]="['/dashboard/suites/' + suiteName + '/tests/' + test.testName + '/test-settings']" style="color: grey;">Settings</a>
                     </p>
                 </td>

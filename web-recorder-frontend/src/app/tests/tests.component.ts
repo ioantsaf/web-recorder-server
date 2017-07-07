@@ -106,6 +106,16 @@ export class TestsComponent implements OnInit {
     }
   }
 
+  duplicate(suiteName: string, testName: string) {
+    this.postsService.duplicate(this.currentUser._id, suiteName, testName).subscribe(() => {
+      this.postsService.getTests(this.currentUser._id, this.suiteName).subscribe(tests => {
+          this.tests = tests.sort(function (a, b) {
+            return a.testName.localeCompare(b.testName);
+          });
+      });
+    });
+  }
+
   logout() {
     this.authenticationService.logout();
   }

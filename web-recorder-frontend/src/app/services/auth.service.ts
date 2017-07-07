@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AuthService {
-  serverURL = 'http://localhost:4000/users/';
+  serverURL = 'http://localhost:4000/';
 
   constructor(private http: Http, private router: Router) { }
 

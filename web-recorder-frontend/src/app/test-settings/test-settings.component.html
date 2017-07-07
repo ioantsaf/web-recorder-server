@@ -63,8 +63,9 @@
     </div>
     <div class="form-group" [ngClass]="{ 'has-error': suiteMessage }">
         <label>Suite Name</label>
-        <input type="text" class="form-control" [(ngModel)]="suiteName" style="width: 40%;">
-        <div *ngIf="suiteMessage" class="help-block">{{suiteMessage}}</div>
+        <select class="selectpicker form-control" [(ngModel)]="suiteName" style="width: 40%;">
+            <option *ngFor="let suite of suites" [ngValue]="suite">{{suite}}</option>
+        </select>
     </div>
 </div>
 

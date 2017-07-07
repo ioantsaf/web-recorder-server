@@ -61,10 +61,7 @@
             <input name="email" type="text" class="form-control" [(ngModel)]="currentUser.email" #Email="ngModel" style="width: 40%">
             <div *ngIf="fD.submitted && !Email.valid" class="help-block">Email is required</div>
         </div>
-        <p>
-            <button class="btn btn-primary" type="submit">Save Changes</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button class="btn btn-danger" (click)="modal.open()">Delete Account</button>
-        </p>
+        <button class="btn btn-primary" type="submit">Save Changes</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </form>
     <hr>
 
@@ -92,6 +89,10 @@
             <button class="btn btn-primary" type="submit">Change Password</button>
         </div>
     </form>
+    <hr><br>
+
+    <h3>Delete Account</h3>
+    <button class="btn btn-danger btn-block" style="width: 25%" (click)="modal.open()">Delete Account</button>
 
 </div>
 

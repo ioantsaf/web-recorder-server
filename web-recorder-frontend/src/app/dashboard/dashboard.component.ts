@@ -15,6 +15,7 @@ export class DashboardComponent implements OnInit {
   testsNumber: any[];
   newSuiteName: string;
   message: string;
+  stats: any;
 
   constructor(private postsService: PostsService, private router: Router, private authenticationService: AuthService) {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -26,6 +27,8 @@ export class DashboardComponent implements OnInit {
         return a.name.localeCompare(b.name);
       });
     });
+
+    this.postsService.getStats(this.currentUser._id).subscribe(stats => { this.stats = stats; });
   }
 
   onClickListener(suite: string) {
@@ -42,9 +45,13 @@ export class DashboardComponent implements OnInit {
             return a.name.localeCompare(b.name);
           });
         });
+
+        this.postsService.getStats(this.currentUser._id).subscribe(stats => { this.stats = stats; });
       }, error => {
         this.message = error._body;
       });
+    } else {
+      this.message = 'Suite name can not be blank';
     }
   }
 

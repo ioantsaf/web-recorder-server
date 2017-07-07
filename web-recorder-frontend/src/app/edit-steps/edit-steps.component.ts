@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PostsService } from '../services/posts.service';
 import { AuthService } from '../services/auth.service';
 import { User } from '../user';
+import { TestObject } from '../test-object';
 
 @Component({
   selector: 'app-edit-steps',
@@ -20,6 +21,8 @@ export class EditStepsComponent implements OnInit {
   applyToAllStatus: string;
   applyToAllMessage: string;
   applyToAllIndex: number;
+  suites: any[];
+  filter: TestObject = new TestObject();
 
   // tslint:disable-next-line:max-line-length
   constructor(private postsService: PostsService, private router: Router, route: ActivatedRoute, private authenticationService: AuthService) {
@@ -40,7 +43,17 @@ export class EditStepsComponent implements OnInit {
          this.testObject = test.testObject;
        }
 
+    });
+
+    this.postsService.getSuiteNames(this.currentUser._id).subscribe(suites => {
+      this.suites = suites.sort(function (a, b) {
+            return a.localeCompare(b);
       });
+    });
+  }
+
+  changeValue() {
+    this.filter.description = this.filter.id;
   }
 
   onSave() {
@@ -111,6 +124,22 @@ export class EditStepsComponent implements OnInit {
       this.applyToAllStatus = 'fail';
       this.applyToAllMessage = 'Failed to apply changes to all tests';
       this.applyToAllIndex = index;
+    });
+  }
+
+  findTestPreconditionNames(suiteName: string, index: number) {
+    this.postsService.getTestNames(this.currentUser._id, suiteName).subscribe(tests => {
+      this.preconditions[index].tests = tests.sort(function (a, b) {
+            return a.localeCompare(b);
+      });
+    });
+  }
+
+  findTestPostconditionNames(suiteName: string, index: number) {
+    this.postsService.getTestNames(this.currentUser._id, suiteName).subscribe(tests => {
+      this.postconditions[index].tests = tests.sort(function (a, b) {
+            return a.localeCompare(b);
+      });
     });
   }
 

@@ -29,6 +29,7 @@ import { TestHistoryComponent } from './test-history/test-history.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
+import { SearchStepsPipe } from './search-steps.pipe';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
     SingleTestHistoryComponent,
     TestHistoryComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    SearchStepsPipe
   ],
   imports: [
     BrowserModule,
