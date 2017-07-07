@@ -6,35 +6,37 @@ var userService = require('services/user.service');
 router.post('/authenticate', authenticate);
 router.post('/register', register);
 router.post('/:_id/tests', postTests);
+router.post('/:_id/:suite/:test/duplicate', duplicate);
 router.post('/:_id/suites', createSuite);
 router.post('/:_id/test', createTest);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password/:id', resetPassword);
-router.get('/', getAllUsers);
 router.get('/current', getCurrentUser);
+router.get('/:_id/stats', getUserStats);
 router.get('/:_id/suites', getSuitesById);
 router.get('/:_id/suiteNames', getSuiteNames);
-router.get('/:_id/:suite', getSuite);
-router.get('/:_id/:suite/tests', getTestsBySuite);
-router.get('/:_id/:suite/tests/:test', getTest);
-router.get('/:_id/:suite/tests/:test/result', getTestResult);
-router.get('/:_id/:suite/history', getSuiteHistory);
-router.get('/:_id/:suite/history/:history_id', getSuiteTestsHistory);
-router.get('/:_id/:suite/history/:history_id/:test', getSuiteTestHistory);
-router.get('/:_id/:suite/tests/:test/history/:history_id', getTestHistory);
+router.get('/:_id/suites/:suite', getSuite);
+router.get('/:_id/suites/:suite/tests', getTestsBySuite);
+router.get('/:_id/suites/:suite/names', getTestNamesBySuite);
+router.get('/:_id/suites/:suite/tests/:test', getTest);
+router.get('/:_id/suites/:suite/tests/:test/result', getTestResult);
+router.get('/:_id/suites/:suite/history', getSuiteHistory);
+router.get('/:_id/suites/:suite/history/:history_id', getSuiteTestsHistory);
+router.get('/:_id/suites/:suite/history/:history_id/:test', getSuiteTestHistory);
+router.get('/:_id/suites/:suite/tests/:test/history/:history_id', getTestHistory);
 router.put('/:_id', updateUser);
 router.put('/:_id/password', updateUserPassword);
-router.put('/:_id/:suite/tests/:test/updateid', updateStepsID);
-router.put('/:_id/:suite/tests/:test/edit', updateTest);
-router.put('/:_id/:suite/tests/:test/update-result', updateTestResult);
-router.put('/:_id/:suite/tests/:test/settings', updateTestSettings);
-router.put('/:_id/:suite/settings', updateSuiteSettings);
-router.put('/:_id/:suite/history', updateSuiteHistory);
-router.put('/:_id/:suite/tests/:test', deleteTest);
-router.put('/:_id/:suite', deleteSuite);
-router.put('/:_id/:suite/history/:history_id', deleteSuiteHistory);
-router.put('/:_id/:suite/history/:history_id/:test', deleteSuiteTestHistory);
-router.put('/:_id/:suite/tests/:test/history/:history_id', deleteTestHistory);
+router.put('/:_id/suites/:suite/tests/:test/updateid', updateStepsID);
+router.put('/:_id/suites/:suite/tests/:test/edit', updateTest);
+router.put('/:_id/suites/:suite/tests/:test/update-result', updateTestResult);
+router.put('/:_id/suites/:suite/tests/:test/settings', updateTestSettings);
+router.put('/:_id/suites/:suite/settings', updateSuiteSettings);
+router.put('/:_id/suites/:suite/history', updateSuiteHistory);
+router.put('/:_id/suites/:suite/tests/:test', deleteTest);
+router.put('/:_id/suites/:suite', deleteSuite);
+router.put('/:_id/suites/:suite/history/:history_id', deleteSuiteHistory);
+router.put('/:_id/suites/:suite/history/:history_id/:test', deleteSuiteTestHistory);
+router.put('/:_id/suites/:suite/tests/:test/history/:history_id', deleteTestHistory);
 router.delete('/:_id', deleteUser);
 
 module.exports = router;
@@ -93,6 +95,16 @@ function postTests(req, res) {
 		});
 }
 
+function duplicate(req, res) {
+	userService.duplicate(req.params._id, req.params.suite, req.params.test)
+		.then(function() {
+			res.sendStatus(200);
+		})
+		.catch(function(err) {
+			res.status(400).send(err);
+		});
+}
+
 function createSuite(req, res) {
 	userService.createSuite(req.params._id, req.body.suiteName)
 		.then(function() {
@@ -113,16 +125,6 @@ function createTest(req, res) {
 		});
 }
 
-function getAllUsers(req, res) {
-    userService.getAllUsers()
-        .then(function(users) {
-            res.send(users);
-        })
-        .catch(function(err) {
-            res.status(400).send(err);
-        });
-}
-
 function getCurrentUser(req, res) {
     userService.getUserById(req.user.sub)
         .then(function(user) {
@@ -131,6 +133,16 @@ function getCurrentUser(req, res) {
             } else {
                 res.sendStatus(404);
             }
+        })
+        .catch(function(err) {
+            res.status(400).send(err);
+        });
+}
+
+function getUserStats(req, res) {
+    userService.getUserStats(req.params._id)
+        .then(function(stats) {
+        	res.send(stats);
         })
         .catch(function(err) {
             res.status(400).send(err);
@@ -171,6 +183,16 @@ function getTestsBySuite(req, res) {
 	userService.getTestsBySuite(req.params._id, req.params.suite)
 		.then(function(tests) {
 			res.send(tests);
+		})
+		.catch(function(err) {
+			res.status(400).send(err);
+		});
+}
+
+function getTestNamesBySuite(req, res) {
+	userService.getTestNamesBySuite(req.params._id, req.params.suite)
+		.then(function(names) {
+			res.send(names);
 		})
 		.catch(function(err) {
 			res.status(400).send(err);

@@ -14,6 +14,7 @@ var api_key = 'key-45e63f2468950f81264e49cc4e767683';
 var domain = 'sandbox8e561dce537a4a5e8342b6344e691578.mailgun.org';
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
 var db = mongo.db(config.connectionString, { native_parser: true });
+var websiteURL = 'http://snf-750380.vm.okeanos.grnet.gr:8080/';
 db.bind('users');
 
 var service = {};
@@ -21,12 +22,13 @@ var service = {};
 service.authenticate = authenticate;
 service.forgotPassword = forgotPassword;
 service.resetPassword = resetPassword;
-service.getAllUsers = getAllUsers;
 service.getUserById = getUserById;
+service.getUserStats = getUserStats;
 service.getSuitesById = getSuitesById;
 service.getSuite = getSuite;
 service.getSuiteNames = getSuiteNames;
 service.getTestsBySuite = getTestsBySuite;
+service.getTestNamesBySuite = getTestNamesBySuite;
 service.getTest = getTest;
 service.getTestResult = getTestResult;
 service.getSuiteHistory = getSuiteHistory;
@@ -34,6 +36,7 @@ service.getSuiteTestsHistory = getSuiteTestsHistory;
 service.getSuiteTestHistory = getSuiteTestHistory;
 service.getTestHistory = getTestHistory;
 service.postTests = postTests;
+service.duplicate = duplicate;
 service.createUser = createUser;
 service.createSuite = createSuite;
 service.createTest = createTest;
@@ -125,7 +128,7 @@ function schedule_mail(_id) {
 			
 			for (var i = 0; i < suites.length; i++) {
 				if (suites[i].schedule != "none" && suites[i].history[0].status.failed != 0) {
-					var link = 'http://snf-750380.vm.okeanos.grnet.gr:8080/dashboard/suites/' + suites[i].name + '/history/' + suites[i].history[0].id;
+					var link = websiteURL + 'dashboard/suites/' + suites[i].name + '/history/' + suites[i].history[0].id;
 					var data = {
 						from: 'Web Recorder <postmaster@sandbox8e561dce537a4a5e8342b6344e691578.mailgun.org>',
 						to: user.email,
@@ -177,7 +180,7 @@ function forgotPassword(email) {
 		
 		if (user) {
 			var temp_pass = randomID(30, "aA0");
-			var link = 'http://snf-750380.vm.okeanos.grnet.gr:8080/reset-password/' + temp_pass;
+			var link = websiteURL + 'reset-password/' + temp_pass;
 			var data = {
 				from: 'Web Recorder <postmaster@sandbox8e561dce537a4a5e8342b6344e691578.mailgun.org>',
 				to: user.email,
@@ -225,22 +228,6 @@ function resetPassword(temp_pass, password) {
 	return deferred.promise; 
 }
 
-function getAllUsers() {
-    var deferred = Q.defer();
-
-    db.users.find().toArray(function(err, users) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        users = _.map(users, function (user) {
-            return _.omit(user, 'hash');
-        });
-
-        deferred.resolve(users);
-    });
-
-    return deferred.promise;
-}
-
 function getUserById(_id) {
     var deferred = Q.defer();
 
@@ -249,6 +236,42 @@ function getUserById(_id) {
 
         if (user) {
             deferred.resolve(_.omit(user, 'hash'));
+        } else {
+            deferred.resolve();
+        }
+    });
+
+    return deferred.promise;
+}
+
+function getUserStats(_id) {
+	var deferred = Q.defer();
+
+    db.users.findById(_id, function(err, user) {
+        if (err) deferred.reject(err.name + ': ' + err.message);
+
+        if (user) {
+        	var suites_length = _.pick(user, 'suites').suites.length;
+        	var tests = _.pick(user, 'tests').tests;
+        	var passing = 0;
+        	var failing = 0;
+        	var not_tested = 0;
+        	
+        	for (var i = 0; i < tests.length; i++) {
+        		if (tests[i].status == "PASSED") passing++;
+        		else if (tests[i].status == "FAILED") failing++;
+        		else not_tested++;
+        	}
+        	
+        	var set = {
+        		"suites": suites_length,
+        		"tests": tests.length,
+        		"passing": passing,
+        		"failing": failing,
+        		"not_tested": not_tested 
+        	};
+        	
+            deferred.resolve(set);
         } else {
             deferred.resolve();
         }
@@ -332,6 +355,31 @@ function getTestsBySuite(_id, suite_name) {
 			for (var i = 0; i < tests.length; i++) {
 				if (tests[i].suiteName == suite_name) {
 					selectedTests.push(tests[i]);
+				}
+			}
+			
+			deferred.resolve(selectedTests);
+		} else {
+            deferred.resolve();
+        }
+	});
+	
+	return deferred.promise;
+}
+
+function getTestNamesBySuite(_id, suite_name) {
+	var deferred = Q.defer();
+	
+	db.users.findById(_id, function(err, user) {
+		if (err) deferred.reject(err.name + ': ' + err.message);
+		
+		if (user) {
+			var tests = _.pick(user, 'tests').tests;
+			var selectedTests = [];
+			
+			for (var i = 0; i < tests.length; i++) {
+				if (tests[i].suiteName == suite_name) {
+					selectedTests.push(tests[i].testName);
 				}
 			}
 			
@@ -577,6 +625,11 @@ function selenium(object, driver, until, By, webdriver) {
 		driver.get(driver.getCurrentUrl())
 			.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) } )
 			.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'URL NOT FOUND'}) } );
+	}
+	else if (object.type == "pause") {
+		driver.sleep(object.input)
+			.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) } )
+			.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'TEST EXECUTION COULD NOT BE PAUSED'}) } );
 	}
 	else if (object.type == "present") {
 		if (object.identifier === "id") 
@@ -1414,6 +1467,52 @@ function postTests(_id, info) {
 	});
 	
 	return deferred.promise;
+}
+
+function duplicate(_id, suite_name, test_name) {
+	var deferred = Q.defer();
+
+    db.users.findById(_id, function(err, user) {
+		if (err) deferred.reject(err.name + ': ' + err.message);
+    	
+    	if (user) {
+    		var tests = _.pick(user, 'tests').tests;
+    		var testName;
+    		var suiteName;
+    		var testObject;
+    		
+    		for (var i = 0; i < tests.length; i++) {
+    			if (tests[i].suiteName == suite_name && tests[i].testName == test_name) {
+    				var j = 1;
+    				suiteName = tests[i].suiteName;
+    				testObject = tests[i].testObject;
+    				
+    				testObject.map(function(obj) {
+    					obj.status = 'PENDING';
+    					obj.description = '';
+    					obj.error = '';
+    				});
+    				
+    				do {
+    					testName = tests[i].testName + '-' + j;
+    					j++;
+    				} while(_.contains(tests.map(function(test) { return test.testName; }), testName))
+    			}
+    		}
+    		
+    		var info = {
+    			'suite_name': suiteName,
+    			'test_name': testName,
+    			'test_obj': testObject
+    		};
+    		
+    		deferred.resolve(postTests(_id, info));
+    	} else {
+    		deferred.resolve();
+    	}
+   	});
+   	
+   	return deferred.promise;
 }
 
 function createUser(userParam) {
