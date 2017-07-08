@@ -62,7 +62,13 @@
         </div>
         <div class="col-md-4">
             <br><br>
-            <input type="text" class="form-control" placeholder="Search steps..." [(ngModel)]="filter.id" (keyup)="changeValue();">
+            <input *ngIf="search === 'id'" type="text" class="form-control" placeholder="Search steps..." [(ngModel)]="filter.id">
+            <input *ngIf="search === 'description'" type="text" class="form-control" placeholder="Search steps..." [(ngModel)]="filter.description">
+            <p>
+                Search based on:
+                <input type="radio" value="id" [(ngModel)]="search"> Identifier &nbsp;
+                <input type="radio" value="description" [(ngModel)]="search"> Description &nbsp;
+            </p>
         </div>
     </div>
 

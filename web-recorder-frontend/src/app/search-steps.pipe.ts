@@ -20,9 +20,7 @@ export class SearchStepsPipe implements PipeTransform {
       if (filter[field]) {
         if (object[field].toLowerCase().indexOf(filter[field].toLowerCase()) === -1) {
           return false;
-        }
-
-        break;
+        };
       }
     }
 

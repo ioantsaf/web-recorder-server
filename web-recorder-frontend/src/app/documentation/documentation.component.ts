@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class DocumentationComponent implements OnInit {
   pageId = 'Getting Started';
   headline = 'Documentation';
-  serverURL = 'http://snf-750380.vm.okeanos.grnet.gr:4000/users/';
+  serverURL = 'http://snf-750380.vm.okeanos.grnet.gr:4000/';
   websiteURL = 'http://snf-750380.vm.okeanos.grnet.gr:8080';
 
   constructor() { }

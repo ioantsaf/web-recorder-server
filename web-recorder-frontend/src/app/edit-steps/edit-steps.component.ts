@@ -23,6 +23,7 @@ export class EditStepsComponent implements OnInit {
   applyToAllIndex: number;
   suites: any[];
   filter: TestObject = new TestObject();
+  search = 'id';
 
   // tslint:disable-next-line:max-line-length
   constructor(private postsService: PostsService, private router: Router, route: ActivatedRoute, private authenticationService: AuthService) {
@@ -50,10 +51,6 @@ export class EditStepsComponent implements OnInit {
             return a.localeCompare(b);
       });
     });
-  }
-
-  changeValue() {
-    this.filter.description = this.filter.id;
   }
 
   onSave() {
