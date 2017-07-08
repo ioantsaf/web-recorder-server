@@ -1915,7 +1915,7 @@ function updateTestResult(_id, suite_name, test_name, res) {
 						}
 					}
 					
-					if (pos !== undefined) {
+					if (pos !== undefined && preconditionStatus) {
 						for (var k = pos + 1; k < tests[i].testObject.length; k++) {
 							tests[i].testObject[k].status = "PENDING";
 							tests[i].testObject[k].error = "";
