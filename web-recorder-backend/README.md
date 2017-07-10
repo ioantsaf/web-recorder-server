@@ -55,7 +55,7 @@ WantedBy=multi-user.target
 
 Next, start the newly created service with `systemctl`.
 ```
-sudo systemctl start mongodb
+$ sudo systemctl start mongodb
 ```
 
 While there is no output to this command, you can also use `systemctl` to check that the service has started properly.
@@ -75,3 +75,21 @@ Output
    CGroup: /system.slice/mongodb.service
            └─4093 /usr/bin/mongod --quiet --config /etc/mongod.conf
 ```
+
+The last step is to enable automatically starting MongoDB when the system starts.
+```
+$ sudo systemctl enable mongodb
+```
+
+#### Install Packages
+After selenium and MongoDB installation you have to run `$ npm install` in backend folder in order to install all the required packages.
+
+### Running
+Now you can run Web Recorder's API after having installed all required packages. In order to run API type this command:
+```
+$ node server.js
+```
+You can run `server.js` using also [nodemon][nodemon] or [forever][forever].
+
+[nodemon]: https://github.com/remy/nodemon
+[forever]: https://www.npmjs.com/package/forever
