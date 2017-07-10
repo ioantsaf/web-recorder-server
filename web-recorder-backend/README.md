@@ -23,3 +23,55 @@ Issue the following command to create a list file for MongoDB.
 ```
 $ echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 ```
+
+After adding the repository details, we need to update the packages list.
+```
+$ sudo apt-get update
+```
+
+Now we can install the MongoDB package itself.
+```
+$ sudo apt-get install -y mongodb-org
+```
+
+We'll create a unit file to manage the MongoDB service. Create a configuration file named mongodb.service in the /etc/systemd/system directory using nano or your favorite text editor.
+```
+$ sudo nano /etc/systemd/system/mongodb.service
+```
+
+Paste in the following contents, then save and close the file.
+```
+[Unit]
+Description=High-performance, schema-free document-oriented database
+After=network.target
+
+[Service]
+User=mongodb
+ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Next, start the newly created service with `systemctl`.
+```
+sudo systemctl start mongodb
+```
+
+While there is no output to this command, you can also use `systemctl` to check that the service has started properly.
+```
+$ sudo systemctl status mongodb
+```
+
+Output
+```
+● mongodb.service - High-performance, schema-free document-oriented database
+   Loaded: loaded (/etc/systemd/system/mongodb.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2016-04-25 14:57:20 EDT; 1min 30s ago
+ Main PID: 4093 (mongod)
+    Tasks: 16 (limit: 512)
+   Memory: 47.1M
+      CPU: 1.224s
+   CGroup: /system.slice/mongodb.service
+           └─4093 /usr/bin/mongod --quiet --config /etc/mongod.conf
+```
