@@ -8,11 +8,11 @@ Backend represents all the logic behind the scenes. It is responsible for test r
 
 ### Manual Installation
 For manual installation you have to install these packages:
-1) Selenium Wedriver using npm
+#### Selenium Wedriver using npm
 ```
 $ npm install selenium-webdriver
 ```
-2) MongoDB
+#### MongoDB
 
  First we have to import the key for the official MongoDB repository.
 ```
