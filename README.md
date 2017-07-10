@@ -10,12 +10,12 @@ Web Recorder's Server consists of two parts: Frontend for the visual representat
 ## Manual Installation
 If you want to install locally to your PC either the Web Application or the app's Backend you have to install Node via npm:
 ```
-curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-sudo apt-get install -y nodejs
+$ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+$ sudo apt-get install -y nodejs
 ```
 To compile and install native addons from npm you also need to install build tools:
 ```
-sudo apt-get install -y build-essential
+$ sudo apt-get install -y build-essential
 ```
 
 More information about frontend and backend installation you can find in the sub-folders.
