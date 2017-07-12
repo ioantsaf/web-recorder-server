@@ -35,7 +35,7 @@ You can run `server.js` using also [nodemon][nodemon] or [forever][forever].
 [nodemon]: https://github.com/remy/nodemon
 [forever]: https://www.npmjs.com/package/forever
 
-If you also have installed locally or in your server the app's backend you have to modify it's listening URL on `src/app/services/auth.service.ts` file:
+If you have installed locally or in your server the app's backend, you have to modify it's listening URL on `src/app/services/auth.service.ts` file:
 ```
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
@@ -59,3 +59,13 @@ export class PostsService {
   serverURL = 'http://localhost:4000/';
 ...
 ```
+
+### Docker installation
+There is a more simple way to install Web Recorder's frontend locally in your PC through a Docker container. At first you need to install docker. Please follow the [very good instructions](https://docs.docker.com/engine/installation/) from the Docker project.
+
+After the successful installation, all you need to do is:
+```
+$ sudo docker run -d -p <your-port>:8080 --name <your-container-name> webrecordergr/web-recorder:frontend
+```
+
+It is recommended to run your frontend's image on port 8080 in order to connect directly with Web Recorder's backend without any modification.
