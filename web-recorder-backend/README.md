@@ -4,8 +4,6 @@ Backend represents all the logic behind the scenes. It is responsible for test r
 [documentation]: http://snf-750380.vm.okeanos.grnet.gr:8080/documentation
 
 ## Installation
-### Docker Installation
-
 ### Manual Installation
 For manual installation you have to install these packages:
 #### Selenium Wedriver using npm
@@ -14,7 +12,7 @@ $ npm install selenium-webdriver
 ```
 #### MongoDB
 
- First we have to import the key for the official MongoDB repository.
+ First you have to import the key for the official MongoDB repository.
 ```
 $ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
 ```
@@ -24,17 +22,17 @@ Issue the following command to create a list file for MongoDB.
 $ echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 ```
 
-After adding the repository details, we need to update the packages list.
+After adding the repository details, you need to update the packages list.
 ```
 $ sudo apt-get update
 ```
 
-Now we can install the MongoDB package itself.
+Now you can install the MongoDB package itself.
 ```
 $ sudo apt-get install -y mongodb-org
 ```
 
-We'll create a unit file to manage the MongoDB service. Create a configuration file named mongodb.service in the /etc/systemd/system directory using nano or your favorite text editor.
+You'll create a unit file to manage the MongoDB service. Create a configuration file named mongodb.service in the /etc/systemd/system directory using nano or your favorite text editor.
 ```
 $ sudo nano /etc/systemd/system/mongodb.service
 ```
@@ -91,5 +89,29 @@ $ node server.js
 ```
 You can run `server.js` using also [nodemon][nodemon] or [forever][forever].
 
+Server is now listening on port 4000 and can be accessed through http://localhost:4000. If you want to change listening port you have to modify it on `server.js` file:
+```
+...
+// start server
+var port = 4000;
+var server = app.listen(port, function () {
+    console.log('Server listening on port ' + port);
+});
+```
+
+If you also have installed locally or in your server the app's frontend you have to modify it's listening URL on `services/user.service.js` file:
+```
+...
+var db = mongo.db(config.connectionString, { native_parser: true });
+var websiteURL = 'http://snf-750380.vm.okeanos.grnet.gr:8080/';
+db.bind('users');
+
+var service = {};
+...
+```
+
 [nodemon]: https://github.com/remy/nodemon
 [forever]: https://www.npmjs.com/package/forever
+
+
+### Docker Installation
