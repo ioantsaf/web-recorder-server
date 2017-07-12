@@ -116,8 +116,9 @@ var service = {};
 
 
 ### Docker Installation
-There is a more simple way to install Web Recorder's backend locally in your PC through a Docker container. Before you install and run the Docker image you have to install MongoDB in your PC, following the previous steps, described in manual installation. 
+There is a more simple way to install Web Recorder's backend locally in your PC through a Docker container. Before you install and run the Docker image you have to install MongoDB in your PC, following the previous steps, described in manual installation.
 
+### Running
 After you install MongoDB, you can run the Web Recorder's backend Docker image typing this command:
 ```
 sudo docker run -d -p <your-port>:4000 --name <your-container-name> webrecordergr/web-recorder:backend
