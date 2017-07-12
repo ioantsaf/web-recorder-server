@@ -8,7 +8,7 @@ Web Recorder's Server consists of two parts: Frontend for the visual representat
 [api]: http://snf-750380.vm.okeanos.grnet.gr:4000
 
 ## Manual Installation
-If you want to install locally to your PC either the Web Application or the app's Backend you have to install Node via npm:
+If you want to install locally to your PC either the Web Application or the app's backend you have to install Node via npm:
 ```
 $ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 $ sudo apt-get install -y nodejs
