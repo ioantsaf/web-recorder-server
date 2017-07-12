@@ -82,7 +82,7 @@ $ sudo systemctl enable mongodb
 #### Install Packages
 After selenium and MongoDB installation you have to run `$ npm install` in backend folder in order to install all the required packages.
 
-### Running
+#### Running
 Now you can run Web Recorder's API after having installed all required packages. In order to run API type this command:
 ```
 $ node server.js
@@ -116,10 +116,12 @@ var service = {};
 
 
 ### Docker Installation
-There is a more simple way to install Web Recorder's backend locally in your PC through a Docker container. Before you install and run the Docker image you have to install MongoDB in your PC, following the previous steps, described in manual installation.
+There is a more simple way to install Web Recorder's backend locally in your PC through a Docker container. At first you need to install docker. Please follow the [very good instructions](https://docs.docker.com/engine/installation/) from the Docker project. 
 
-### Running
-After you install MongoDB, you can run the Web Recorder's backend Docker image typing this command:
+After the successful docker installation and before you install and run the Docker image you have to install MongoDB in your PC, following the previous steps, described in manual installation.
+
+#### Running
+Having installed MongoDB, you can now run the Web Recorder's backend Docker image typing this command:
 ```
 $ sudo docker run -d -p <your-port>:4000 --name <your-container-name> webrecordergr/web-recorder:backend
 ```
