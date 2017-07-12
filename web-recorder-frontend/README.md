@@ -1,28 +1,31 @@
-# WebRecorderWebsite
+# Web Recorder Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.2.
+Web Recorder's frontend is responsible for the presentation of tests results, steps editing, suite scheduling and more. You can access Web Recorder's website from [here](http://snf-750380.vm.okeanos.grnet.gr:8080) or you can install it locally. More information about Web Recorder's functionality can be found [here](http://snf-750380.vm.okeanos.grnet.gr:8080/documentation).
 
-## Development server
+## Installation
+### Manual installation
+In order to install Web Recorder's frontend locally to your PC you have to previously install Angular CLI, typing this command:
+```
+npm install -g @angular/cli
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+After Angular CLI installation, you have to install all the required packages needed for deployment, running this command to frontend folder:
+```
+npm install
+```
 
-## Code scaffolding
+Then it's time to build the application, using `--prod` flag for production use and `--aot` flag so that the compiler runs once at build time using one set of libraries:
+```
+ng build --prod --aot
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+### Running
+Have installed all the required packages and built the application, it's time to run it. There are two options to run:
+1) Using `ng serve`. The application will listen by default to port 4200. You can change listening port with `--port <port>` flag. It is recommended to use 8080 port so you don't have to change listenig URL to backend files.
+2) Using `node server.js`. The application will listen to 8080 port. In order ro change it you have to modify `server.js` file:
+```
+...
+app.listen(8080, function() {
+    console.log('Frontend app listening on port 8080!');
+});
+```
