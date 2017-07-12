@@ -121,6 +121,6 @@ There is a more simple way to install Web Recorder's backend locally in your PC 
 ### Running
 After you install MongoDB, you can run the Web Recorder's backend Docker image typing this command:
 ```
-sudo docker run -d -p <your-port>:4000 --name <your-container-name> webrecordergr/web-recorder:backend
+$ sudo docker run -d -p <your-port>:4000 --name <your-container-name> webrecordergr/web-recorder:backend
 ```
 It is recommended to run your backend's image on port 4000 in order to connect directly with Web Recorder's frontend without any modification.
