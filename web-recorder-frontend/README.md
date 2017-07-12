@@ -21,7 +21,7 @@ ng build --prod --aot
 
 ### Running
 Having installed all the required packages and built the application, it's time to run it. There are two options to run:
-1) Using `ng serve`. The application will listen by default to port 4200. You can change listening port with `--port <port>` flag. It is recommended to use 8080 port so you don't have to change listenig URL to backend files.
+1) Using `ng serve`. The application will listen by default to port 4200. You can change listening port with `--port <port>` flag. It is recommended to use 8080 port so you don't have to change listening URL to backend files.
 2) Using `node server.js`. The application will listen to 8080 port. In order ro change it you have to modify `server.js` file:
 ```
 ...
