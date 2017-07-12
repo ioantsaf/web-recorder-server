@@ -19,7 +19,7 @@ Then it's time to build the application, using `--prod` flag for production use 
 $ ng build --prod --aot
 ```
 
-### Running
+#### Running
 Having installed all the required packages and built the application, it's time to run it. There are two options to run:
 1) Using `$ ng serve`. The application will listen by default to port 4200. You can change listening port with `--port <port>` flag. It is recommended to use 8080 port so you don't have to change listening URL to backend files.
 2) Using `$ node server.js`. The application will listen to 8080 port. In order ro change it you have to modify `server.js` file:
@@ -63,6 +63,7 @@ export class PostsService {
 ### Docker installation
 There is a more simple way to install Web Recorder's frontend locally in your PC through a Docker container. At first you need to install docker. Please follow the [very good instructions](https://docs.docker.com/engine/installation/) from the Docker project.
 
+#### Running
 After the successful installation, all you need to do is:
 ```
 $ sudo docker run -d -p <your-port>:8080 --name <your-container-name> webrecordergr/web-recorder:frontend
