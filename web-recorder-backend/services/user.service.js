@@ -614,24 +614,33 @@ function getTestResult(_id, suite_name, test_name) {
 
 function selenium(object, driver, until, By, webdriver) {
 	var deferred = Q.defer();
-	var timeout = 5000;
+	var timeout = 10000;
+	var sleeping = 400;
 	
 	if (object.type == "get") {
+		driver.sleep(sleeping);
+		
 		driver.get(object.URL)
 			.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) } )
 			.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'URL NOT FOUND'}) } );
 	}
 	else if (object.type == "refresh") {
+		driver.sleep(sleeping);
+		
 		driver.get(driver.getCurrentUrl())
 			.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) } )
 			.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'URL NOT FOUND'}) } );
 	}
 	else if (object.type == "pause") {
+		driver.sleep(sleeping);
+		
 		driver.sleep(object.input)
 			.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) } )
 			.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'TEST EXECUTION COULD NOT BE PAUSED'}) } );
 	}
 	else if (object.type == "present") {
+		driver.sleep(sleeping);
+		
 		if (object.identifier === "id") 
 			driver.wait(until.elementLocated({id: object.id}), timeout)
 				.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) })
@@ -658,6 +667,8 @@ function selenium(object, driver, until, By, webdriver) {
 				.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT IS NOT PRESENT'}) });
 	}
 	else if (object.type == "not-present") {
+		driver.sleep(sleeping);
+		
 		if (object.identifier === "id") 
 			driver.wait(until.elementLocated({id: object.id}), timeout)
 				.then(() => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT IS PRESENT'}) })
@@ -711,7 +722,7 @@ function selenium(object, driver, until, By, webdriver) {
 	}
 	
 	function targeting() {
-		driver.sleep(250);
+		driver.sleep(sleeping);
 		
 		if (object.type === "click") {
 			if (object.identifier === "id")
