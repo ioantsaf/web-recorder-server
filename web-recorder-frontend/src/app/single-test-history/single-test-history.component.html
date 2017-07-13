@@ -123,15 +123,15 @@
                     <h5 *ngIf="t.description !== ''">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>{{t.description}}</code></h5>
                     <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Error: {{t.error}}</b></h5>
                 </td>
-                <td *ngIf="t.type == 'pause' && running == false && t.status == 'PENDING'" style="background-color: #f5f5f0;">
+                <td *ngIf="t.type == 'pause' && t.status == 'PENDING'" style="background-color: #f5f5f0;">
                     <h5><b>#{{i+1}}</b>&nbsp;&nbsp;<span class="glyphicon glyphicon-dashboard " aria-hidden="true "></span> Pause <b><u>{{t.input}}</u></b> ms</h5>
                     <h5 *ngIf="t.description !== ''">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>{{t.description}}</code></h5>
                 </td>
-                <td *ngIf="t.type == 'pause' && running == false && t.status == 'OK'" style="background-color: #ebfaeb;">
+                <td *ngIf="t.type == 'pause' && t.status == 'OK'" style="background-color: #ebfaeb;">
                     <h5><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: green;"></span>&nbsp;&nbsp;&nbsp;<b>#{{i+1}}</b>&nbsp;&nbsp;<span class="glyphicon glyphicon-dashboard" aria-hidden="true "></span> Pause <b><u>{{t.input}}</u></b>                        ms</h5>
                     <h5 *ngIf="t.description !== ''">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>{{t.description}}</code></h5>
                 </td>
-                <td *ngIf="t.type == 'pause' && running == false && t.status == 'FAIL'" style="background-color: #ffe6e6;">
+                <td *ngIf="t.type == 'pause' && t.status == 'FAIL'" style="background-color: #ffe6e6;">
                     <h5><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: red;"></span>&nbsp;&nbsp;&nbsp;<b>#{{i+1}}</b>&nbsp;&nbsp;<span class="glyphicon glyphicon-dashboard" aria-hidden="true "></span> Pause <b><u>{{t.input}}</u></b>                        ms</h5>
                     <h5 *ngIf="t.description !== ''">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>{{t.description}}</code></h5>
                     <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp<b>Error: {{t.error}}</b></h5>

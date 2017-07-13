@@ -65,15 +65,18 @@ export class EditStepsComponent implements OnInit {
   }
 
   addAbove(index: number) {
-    this.testObject.splice(index, 0, {'type': 'click', 'identifier': 'id', 'id': '', 'input': '', 'status': 'PENDING', 'error': ''});
+    // tslint:disable-next-line:max-line-length
+    this.testObject.splice(index, 0, {'type': 'click', 'identifier': 'id', 'id': '', 'input': '', 'url': '', 'status': 'PENDING', 'error': '', 'description': ''});
   }
 
   addBelow(index: number) {
-    this.testObject.splice(index + 1, 0, {'type': 'click', 'identifier': 'id', 'id': '', 'input': '', 'status': 'PENDING', 'error': ''});
+    // tslint:disable-next-line:max-line-length
+    this.testObject.splice(index + 1, 0, {'type': 'click', 'identifier': 'id', 'id': '', 'input': '', 'url': '', 'status': 'PENDING', 'error': '', 'description': ''});
   }
 
   addStep() {
-    this.testObject.push({'type': 'click', 'identifier': 'id', 'id': '', 'input': '', 'status': 'PENDING', 'error': ''});
+    // tslint:disable-next-line:max-line-length
+    this.testObject.push({'type': 'click', 'identifier': 'id', 'id': '', 'input': '', 'url': '', 'status': 'PENDING', 'error': '', 'description': ''});
   }
 
   deleteStep(index: number) {
