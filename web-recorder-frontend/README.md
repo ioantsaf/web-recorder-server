@@ -6,7 +6,7 @@ Web Recorder's frontend is responsible for the presentation of tests results, st
 ### Manual installation
 In order to install Web Recorder's frontend locally to your PC you have to previously install Angular CLI, typing this command:
 ```
-$ npm install -g @angular/cli
+$ sudo npm install -g @angular/cli
 ```
 
 After Angular CLI installation, you have to install all the required packages needed for deployment, running this command to frontend folder:
