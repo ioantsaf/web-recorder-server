@@ -4,7 +4,7 @@ import { User } from '../user';
 
 @Injectable()
 export class PostsService {
-  serverURL = 'http://localhost:4000/';
+  serverURL = 'http://snf-750380.vm.okeanos.grnet.gr:4000/';
 
   constructor(private http: Http) { }
 
@@ -28,6 +28,10 @@ export class PostsService {
     return this.http.get(this.serverURL + _id + '/suiteNames', this.jwt()).map((response: Response) => response.json());
   }
 
+  getSuiteStats(_id: string, suiteName: string) {
+    return this.http.get(this.serverURL + _id + '/suites/' + suiteName + '/stats', this.jwt()).map((response: Response) => response.json());
+  }
+
   getTests(_id: string, suiteName: string) {
     // tslint:disable-next-line:max-line-length
     return this.http.get(this.serverURL + _id + '/suites/' + suiteName + '/tests', this.jwt()).map((response: Response) => response.json());
@@ -40,6 +44,11 @@ export class PostsService {
   getTest(_id: string, suiteName: string, testName: string) {
     // tslint:disable-next-line:max-line-length
     return this.http.get(this.serverURL + _id + '/suites/' + suiteName + '/tests/' + testName, this.jwt()).map((response: Response) => response.json());
+  }
+
+  getTestStats(_id: string, suiteName: string, testName: string) {
+    // tslint:disable-next-line:max-line-length
+    return this.http.get(this.serverURL + _id + '/suites/' + suiteName + '/tests/' + testName + '/stats', this.jwt()).map((response: Response) => response.json());
   }
 
   getTestResult(_id: string, suiteName: string, testName: string) {

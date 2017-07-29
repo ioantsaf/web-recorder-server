@@ -20,13 +20,14 @@ export class SingleTestComponent implements OnInit {
   running = false;
   preconditions: any[];
   postconditions: any[];
+  stats: any;
 
   // tslint:disable-next-line:max-line-length
   constructor(private postsService: PostsService, private router: Router, route: ActivatedRoute, private authenticationService: AuthService) {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.testName = route.snapshot.params['test'];
     this.suiteName = route.snapshot.params['suite'];
-   }
+  }
 
   ngOnInit() {
     this.postsService.getTest(this.currentUser._id, this.suiteName, this.testName).subscribe(test => {
@@ -37,27 +38,40 @@ export class SingleTestComponent implements OnInit {
 
       try {
         this.testObject = JSON.parse(test.testObject);
-      } catch(err) {
+      } catch (err) {
         this.testObject = test.testObject;
       }
     });
+
+    this.postsService.getTestStats(this.currentUser._id, this.suiteName, this.testName).subscribe(stats => { this.stats = stats; })
   }
 
   runTest() {
     this.running = true;
-    this.postsService.getTestResult(this.currentUser._id, this.suiteName, this.testName).subscribe(result => {
-      this.result = result;
-      this.postsService.updateTestResult(this.currentUser._id, this.suiteName, this.testName, this.result).subscribe(() => {
-        this.postsService.getTest(this.currentUser._id, this.suiteName, this.testName).subscribe(test => {
-          this.test = test;
-          this.testObject = test.testObject;
-          this.history = test.history;
-          this.preconditions = test.preconditions;
-          this.postconditions = test.postconditions;
-          this.running = false;
+    let repeat = 0;
+
+    for (let i = 0; i < this.test.runs; i++) {
+      this.postsService.getTestResult(this.currentUser._id, this.suiteName, this.testName).subscribe(result => {
+        this.result = result;
+        this.postsService.updateTestResult(this.currentUser._id, this.suiteName, this.testName, this.result).subscribe(() => {
+          repeat++;
+
+          if (repeat == this.test.runs) {
+            this.postsService.getTest(this.currentUser._id, this.suiteName, this.testName).subscribe(test => {
+              this.test = test;
+              this.testObject = test.testObject;
+              this.history = test.history;
+              this.preconditions = test.preconditions;
+              this.postconditions = test.postconditions;
+              this.running = false;
+
+              // tslint:disable-next-line:max-line-length
+              this.postsService.getTestStats(this.currentUser._id, this.suiteName, this.testName).subscribe(stats => { this.stats = stats; });
+            });
+          }
         });
       });
-    });
+    }
   }
 
   onClickHistory(id: string) {
