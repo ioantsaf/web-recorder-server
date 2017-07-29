@@ -18,6 +18,7 @@ export class TestsComponent implements OnInit {
   message: string;
   history: any[];
   running = false;
+  stats: any;
 
   // tslint:disable-next-line:max-line-length
   constructor(private postsService: PostsService, private router: Router, route: ActivatedRoute, private authenticationService: AuthService) {
@@ -33,6 +34,7 @@ export class TestsComponent implements OnInit {
     });
 
     this.postsService.getSuiteHistory(this.currentUser._id, this.suiteName).subscribe(history => { this.history = history; });
+    this.postsService.getSuiteStats(this.currentUser._id, this.suiteName).subscribe(stats => { this.stats = stats; })
   }
 
   onClickListener(test: string) {
@@ -61,6 +63,8 @@ export class TestsComponent implements OnInit {
               this.postsService.updateSuiteHistory(this.currentUser._id, this.suiteName).subscribe(() => {
                 this.postsService.getSuiteHistory(this.currentUser._id, this.suiteName).subscribe(history => {
                   this.history = history;
+
+                  this.postsService.getSuiteStats(this.currentUser._id, this.suiteName).subscribe(stats => { this.stats = stats; });
                 });
               });
 

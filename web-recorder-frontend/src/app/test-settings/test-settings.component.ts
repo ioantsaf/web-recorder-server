@@ -17,7 +17,9 @@ export class TestSettingsComponent implements OnInit {
   oldTestName: string;
   testMessage: string;
   suiteMessage: string;
+  runsMessage: string;
   suites: any[];
+  test: any;
 
   // tslint:disable-next-line:max-line-length
   constructor(private postsService: PostsService, private router: Router, route: ActivatedRoute, private authenticationService: AuthService) {
@@ -34,6 +36,8 @@ export class TestSettingsComponent implements OnInit {
             return a.localeCompare(b);
       });
     });
+
+    this.postsService.getTest(this.currentUser._id, this.suiteName, this.testName).subscribe(test => { this.test = test; });
   }
 
   deleteTest() {
@@ -45,10 +49,11 @@ export class TestSettingsComponent implements OnInit {
   onSave() {
     this.testMessage = '';
     this.suiteMessage = '';
+    this.runsMessage = '';
 
     // tslint:disable-next-line:max-line-length
-    if (this.testName !== '' && this.suiteName !== '') {
-      this.postsService.updateTestSettings(this.currentUser._id, this.oldSuiteName, this.oldTestName, { 'suiteName': this.suiteName, 'testName': this.testName }).subscribe(data => {
+    if (this.testName !== '' && this.suiteName !== '' && this.test.runs !== '') {
+      this.postsService.updateTestSettings(this.currentUser._id, this.oldSuiteName, this.oldTestName, { 'suiteName': this.suiteName, 'testName': this.testName, 'runs': this.test.runs}).subscribe(data => {
         this.router.navigate(['/dashboard/suites/' + this.suiteName + '/tests/' + this.testName]);
       }, error => {
         this.testMessage = error._body;
@@ -61,6 +66,10 @@ export class TestSettingsComponent implements OnInit {
 
     if (this.suiteName === '') {
       this.suiteMessage = 'Suite name can not be blank';
+    }
+
+    if (this.test.runs === '') {
+      this.runsMessage = 'Test runs can not be blank';
     }
   }
 

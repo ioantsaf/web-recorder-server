@@ -67,6 +67,11 @@
             <option *ngFor="let suite of suites" [ngValue]="suite">{{suite}}</option>
         </select>
     </div>
+    <div class="form-group" [ngClass]="{ 'has-error': runsMessage }" *ngIf="test !== undefined">
+        <label>Run Times</label>
+        <input type="text" class="form-control" [(ngModel)]="test.runs" style="width: 40%;">
+        <div *ngIf="runsMessage" class="help-block">{{runsMessage}}</div>
+    </div>
 </div>
 
 <br><br><br><br><br><br><br>

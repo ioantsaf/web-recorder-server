@@ -45,6 +45,9 @@
         <div class="col-md-6" align="left">
             <h1><b>{{suiteName}}</b></h1>
             <p>Below is a full listing of your tests in {{suiteName}} suite.</p>
+            <p *ngIf="stats !== undefined" style="font-size: 110%"><b>Latest Run - {{stats.latest_passed}}/{{stats.tests_number}}</b></p>
+            <p *ngIf="stats !== undefined" style="font-size: 110%"><b>Last Week Runs - {{stats.last_week_passed}}/{{stats.week_runs}}</b></p>
+            <p *ngIf="stats !== undefined" style="font-size: 110%"><b>All Time Runs - {{stats.all_time_passed}}/{{stats.all_time_runs}}</b></p>
         </div>
         <div class="col-md-6" align="right" style="margin-top: 35px;">
             <a class="nav-link" [routerLink]="['/dashboard/suites/' + suiteName + '/suite-settings']" style="cursor: pointer;"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>Settings</a>&nbsp;&nbsp;&nbsp;
