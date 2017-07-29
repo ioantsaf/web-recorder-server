@@ -18,8 +18,10 @@ router.get('/:_id/suiteNames', getSuiteNames);
 router.get('/:_id/suites/:suite', getSuite);
 router.get('/:_id/suites/:suite/tests', getTestsBySuite);
 router.get('/:_id/suites/:suite/names', getTestNamesBySuite);
+router.get('/:_id/suites/:suite/stats', getSuiteStats);
 router.get('/:_id/suites/:suite/tests/:test', getTest);
 router.get('/:_id/suites/:suite/tests/:test/result', getTestResult);
+router.get('/:_id/suites/:suite/tests/:test/stats', getTestStats);
 router.get('/:_id/suites/:suite/history', getSuiteHistory);
 router.get('/:_id/suites/:suite/history/:history_id', getSuiteTestsHistory);
 router.get('/:_id/suites/:suite/history/:history_id/:test', getSuiteTestHistory);
@@ -189,6 +191,16 @@ function getTestsBySuite(req, res) {
 		});
 }
 
+function getSuiteStats(req, res) {
+	userService.getSuiteStats(req.params._id, req.params.suite)
+		.then(function(stats) {
+			res.send(stats);
+		})
+		.catch(function(err) {
+			res.status(400).send(err);
+		});
+}
+
 function getTestNamesBySuite(req, res) {
 	userService.getTestNamesBySuite(req.params._id, req.params.suite)
 		.then(function(names) {
@@ -213,6 +225,16 @@ function getTestResult(req, res) {
 	userService.getTestResult(req.params._id, req.params.suite, req.params.test)
 		.then(function(result) {
 			res.send(result);
+		})
+		.catch(function(err) {
+			res.status(400).send(err);
+		});
+}
+
+function getTestStats(req, res) {
+	userService.getTestStats(req.params._id, req.params.suite, req.params.test)
+		.then(function(stats) {
+			res.send(stats);
 		})
 		.catch(function(err) {
 			res.status(400).send(err);

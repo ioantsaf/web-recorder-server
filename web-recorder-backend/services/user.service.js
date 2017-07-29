@@ -13,6 +13,7 @@ var Promise = require('bluebird');
 var api_key = 'key-45e63f2468950f81264e49cc4e767683';
 var domain = 'sandbox8e561dce537a4a5e8342b6344e691578.mailgun.org';
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
+var RandExp = require('randexp');
 var db = mongo.db(config.connectionString, { native_parser: true });
 var websiteURL = 'http://snf-750380.vm.okeanos.grnet.gr:8080/';
 db.bind('users');
@@ -27,6 +28,7 @@ service.getUserStats = getUserStats;
 service.getSuitesById = getSuitesById;
 service.getSuite = getSuite;
 service.getSuiteNames = getSuiteNames;
+service.getSuiteStats = getSuiteStats;
 service.getTestsBySuite = getTestsBySuite;
 service.getTestNamesBySuite = getTestNamesBySuite;
 service.getTest = getTest;
@@ -35,6 +37,7 @@ service.getSuiteHistory = getSuiteHistory;
 service.getSuiteTestsHistory = getSuiteTestsHistory;
 service.getSuiteTestHistory = getSuiteTestHistory;
 service.getTestHistory = getTestHistory;
+service.getTestStats = getTestStats;
 service.postTests = postTests;
 service.duplicate = duplicate;
 service.createUser = createUser;
@@ -256,11 +259,34 @@ function getUserStats(_id) {
         	var passing = 0;
         	var failing = 0;
         	var not_tested = 0;
+        	var last_week_passed = 0;
+        	var week_runs = 0;
+        	var all_time_passed = 0;
+        	var all_time_runs = 0;
+        	var dt = new Date();
+			var tdt = new Date(dt.valueOf());
+			var dayn = (dt.getDay() + 6) % 7;
+			tdt.setDate(tdt.getDate() - dayn + 3);
+			var firstThursday = tdt.valueOf();
+			tdt.setMonth(0, 1);
+			if (tdt.getDay() !== 4) tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+			var week = 1 + Math.ceil((firstThursday - tdt) / 604800000);
         	
         	for (var i = 0; i < tests.length; i++) {
         		if (tests[i].status == "PASSED") passing++;
         		else if (tests[i].status == "FAILED") failing++;
         		else not_tested++;
+        		
+        		for (var j = 0; j < tests[i].history.length; j++) {
+        			if (tests[i].history[j].status == "PASSED") all_time_passed++;
+        			
+        			if (tests[i].history[j].week == week - 1) {
+        				if (tests[i].history[j].status == "PASSED") last_week_passed++;
+        				week_runs++;
+        			}
+        		}
+        		
+        		all_time_runs += tests[i].history.length;
         	}
         	
         	var set = {
@@ -268,7 +294,11 @@ function getUserStats(_id) {
         		"tests": tests.length,
         		"passing": passing,
         		"failing": failing,
-        		"not_tested": not_tested 
+        		"not_tested": not_tested,
+        		"last_week_passed": last_week_passed,
+        		"week_runs": week_runs,
+        		"all_time_passed": all_time_passed,
+        		"all_time_runs": all_time_runs
         	};
         	
             deferred.resolve(set);
@@ -287,7 +317,24 @@ function getSuitesById(_id) {
 		if (err) deferred.reject(err.name + ': ' + err.message);
 		
 		if (user) {
-			deferred.resolve(_.pick(user, 'suites').suites);
+			var suites = _.pick(user, 'suites').suites;
+			var tests = _.pick(user, 'tests').tests;
+			
+			for (var i = 0; i < suites.length; i++) {
+				suites[i].passed = 0;
+				suites[i].failed = 0;
+				suites[i].not_tested = 0;
+				
+				for (var j = 0; j < tests.length; j++) {
+					if (tests[j].suiteName == suites[i].name) {
+						if (tests[j].status == "PASSED") suites[i].passed++;
+						else if (tests[j].status == "FAILED") suites[i].failed++;
+						else suites[i].not_tested++;
+					}
+				}
+			}
+			
+			deferred.resolve(suites);
 		}
 		else {
 			deferred.resolve();
@@ -335,6 +382,63 @@ function getSuiteNames(_id) {
 			deferred.resolve(names);
 		}
 		else {
+			deferred.resolve();
+		}
+	});
+	
+	return deferred.promise;
+}
+
+function getSuiteStats(_id, suite_name) {
+	var deferred = Q.defer();
+	
+	db.users.findById(_id, function(err, user) {
+		if (err) deferred.reject(err.name + ': ' + err.message);
+		
+		if (user) {
+			var suites = _.pick(user, 'suites').suites;
+			var set = {
+				"latest_passed": 0,
+				"last_week_passed": 0,
+				"all_time_passed": 0,
+				"tests_number": 0,
+				"week_runs": 0,
+				"all_time_runs": 0
+			}
+			
+			for (var i = 0; i < suites.length; i++) {
+				if (suites[i].name == suite_name) {
+					if (suites[i].history.length !== 0) {
+						set.latest_passed = suites[i].history[0].status.passed;
+						
+						var dt = new Date();
+						var tdt = new Date(dt.valueOf());
+						var dayn = (dt.getDay() + 6) % 7;
+						tdt.setDate(tdt.getDate() - dayn + 3);
+						var firstThursday = tdt.valueOf();
+						tdt.setMonth(0, 1);
+						if (tdt.getDay() !== 4) tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+						var week = 1 + Math.ceil((firstThursday - tdt) / 604800000);
+						
+						for (var j = 0; j < suites[i].history.length; j++) {
+							if (suites[i].history[j].week == week - 1) {
+								set.last_week_passed += suites[i].history[j].status.passed;
+								set.week_runs += suites[i].history[j].status.passed + suites[i].history[j].status.failed;
+							}
+							
+							set.all_time_passed += suites[i].history[j].status.passed;
+							set.all_time_runs += suites[i].history[j].status.passed + suites[i].history[j].status.failed;
+						}
+						
+						set.tests_number = suites[i].testsNumber;
+					}
+					
+					break;
+				}
+			}
+			
+			deferred.resolve(set);
+		} else {
 			deferred.resolve();
 		}
 	});
@@ -538,6 +642,63 @@ function getSuiteTestHistory(_id, suite_name, history_id, test_name) {
 	return deferred.promise;
 }
 
+function getTestStats(_id, suite_name, test_name) {
+	var deferred = Q.defer();
+	
+	db.users.findById(_id, function(err, user) {
+		if (err) deferred.reject(err.name + ': ' + err.message);
+		
+		if (user) {
+			var tests = _.pick(user, 'tests').tests;
+			var set = {
+				"latest_result": "",
+				"last_week_passed": 0,
+				"all_time_passed": 0,
+				"week_runs": 0,
+				"all_time_runs": 0
+			}
+			
+			for (var i = 0; i < tests.length; i++) {
+				if (tests[i].suiteName == suite_name && tests[i].testName == test_name) {
+					if (tests[i].history.length !== 0) {
+						var dt = new Date();
+						var tdt = new Date(dt.valueOf());
+						var dayn = (dt.getDay() + 6) % 7;
+						tdt.setDate(tdt.getDate() - dayn + 3);
+						var firstThursday = tdt.valueOf();
+						tdt.setMonth(0, 1);
+						if (tdt.getDay() !== 4) tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+						var week = 1 + Math.ceil((firstThursday - tdt) / 604800000);
+						
+						for (var j = 0; j < tests[i].history.length; j++) {
+							if (tests[i].history[j].week == week - 1) {
+								if (tests[i].history[j].status == "PASSED") set.last_week_passed++;
+								
+								set.week_runs++;
+							}
+							
+							if (tests[i].history[j].status == "PASSED") set.all_time_passed++;
+						}
+						
+						set.all_time_runs = tests[i].history.length;
+					}
+					
+					set.latest_result = tests[i].status;
+					
+					break;
+				}
+			}
+			
+			deferred.resolve(set);
+			
+		} else {
+			deferred.resolve();
+		}
+	});
+	
+	return deferred.promise; 
+}
+
 function getTestResult(_id, suite_name, test_name) {
 	var deferred = Q.defer();
 	
@@ -614,8 +775,8 @@ function getTestResult(_id, suite_name, test_name) {
 
 function selenium(object, driver, until, By, webdriver) {
 	var deferred = Q.defer();
-	var timeout = 10000;
-	var sleeping = 400;
+	var timeout = 8000;
+	var sleeping = 250;
 	
 	if (object.type == "get") {
 		driver.sleep(sleeping);
@@ -829,41 +990,52 @@ function selenium(object, driver, until, By, webdriver) {
 					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'CAN NOT MOVE OVER THIS ELEMENT'}) });
 		}
 		else if (object.type === "change") {
+			if (object.inputType == "regex") {
+				object.input = new RandExp(object.regex).gen();
+			} else if (object.inputType == "int_range") {
+				var minimum = Math.ceil(object.from);
+				var maximum = Math.floor(object.to);
+				
+				object.input = Math.floor(Math.random() * (maximum - minimum + 1) + minimum);
+			} else if (object.inputType == "num_range") {
+				object.input = (Math.random() * (object.to - object.from)) + Number(object.from);
+			}
+			
 			if (object.identifier === "id") {
 				driver.findElement(By.id(object.id)).clear().catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE CLEARED'}) });
 				driver.findElement(By.id(object.id)).sendKeys(object.input)
-					.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) })
-					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED'}) });
+					.then(() => { deferred.resolve({'result': 'OK', 'error': '', 'input': object.input}) })
+					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED', 'input': object.input}) });
 			}
 			else if (object.identifier === "name") {
 				driver.findElement(By.name(object.id)).clear().catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE CLEARED'}) });
 				driver.findElement(By.name(object.id)).sendKeys(object.input)
-					.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) })
-					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED'}) });
+					.then(() => { deferred.resolve({'result': 'OK', 'error': '', 'input': object.input}) })
+					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED', 'input': object.input}) });
 			}
 			else if (object.identifier === "linkText") {
 				driver.findElement(By.linkText(object.id)).clear().catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE CLEARED'}) }); 
 				driver.findElement(By.linkText(object.id)).sendKeys(object.input)
-					.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) })
-					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED'}) });
+					.then(() => { deferred.resolve({'result': 'OK', 'error': '', 'input': object.input}) })
+					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED', 'input': object.input}) });
 			}
 			else if (object.identifier === "className") {
 				driver.findElement(By.className(object.id)).clear().catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE CLEARED'}) });
 				driver.findElement(By.className(object.id)).sendKeys(object.input)
-					.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) })
-					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED'}) });
+					.then(() => { deferred.resolve({'result': 'OK', 'error': '', 'input': object.input}) })
+					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED', 'input': object.input}) });
 			}
 			else if (object.identifier === "xpath") {
 				driver.findElement(By.xpath(object.id)).clear().catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE CLEARED'}) });
 				driver.findElement(By.xpath(object.id)).sendKeys(object.input)
-					.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) })
-					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED'}) });
+					.then(() => { deferred.resolve({'result': 'OK', 'error': '', 'input': object.input}) })
+					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED', 'input': object.input}) });
 			}
 			else if (object.identifier === "css") {
 				driver.findElement(By.css(object.id)).clear().catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE CLEARED'}) });
 				driver.findElement(By.css(object.id)).sendKeys(object.input)
-					.then(() => { deferred.resolve({'result': 'OK', 'error': ''}) })
-					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED'}) });
+					.then(() => { deferred.resolve({'result': 'OK', 'error': '', 'input': object.input}) })
+					.catch((e) => { deferred.resolve({'result': 'FAIL', 'error': 'ELEMENT CANNOT BE ASSIGNED', 'input': object.input}) });
 			}
 		}
 		else if (object.type == "select") {
@@ -1425,7 +1597,8 @@ function postTests(_id, info) {
 							"testObject": info.test_obj,
 							"history": [],
 							"preconditions": [],
-							"postconditions": []
+							"postconditions": [],
+							"runs": 1
 						},
 						"suites": {
 							"name": info.suite_name,
@@ -1454,7 +1627,8 @@ function postTests(_id, info) {
 							"testObject": info.test_obj,
 							"history": [],
 							"preconditions": [],
-							"postconditions": []
+							"postconditions": [],
+							"runs": 1
 						}
 					};
 				
@@ -1644,7 +1818,8 @@ function createTest(_id, info) {
 				],
 				"history": [],
 				"preconditions": [],
-				"postconditions": []
+				"postconditions": [],
+				"runs": 1
 			}
 		};
 		
@@ -1840,6 +2015,13 @@ function updateTestResult(_id, suite_name, test_name, res) {
 			var d = new Date();
 			var preconditionsLength = 0;
 			var preconditionStatus = true;
+			var tdt = new Date(d.valueOf());
+			var dayn = (d.getDay() + 6) % 7;
+			tdt.setDate(tdt.getDate() - dayn + 3);
+			var firstThursday = tdt.valueOf();
+			tdt.setMonth(0, 1);
+			if (tdt.getDay() !== 4) tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+			var week = 1 + Math.ceil((firstThursday - tdt) / 604800000);
 			
 			for (var i = 0; i < tests.length; i++) {
 				if (tests[i].testName == test_name && tests[i].suiteName == suite_name) {
@@ -1859,6 +2041,8 @@ function updateTestResult(_id, suite_name, test_name, res) {
 					} catch(e) {
 						tests[i].testObject = tests[i].testObject;
 					}
+					
+					var object = tests[i].testObject;
 					
 					if (tests[i].preconditions.length != 0) {
 						for (var j = 0; j < tests[i].preconditions.length; j++) {
@@ -1890,12 +2074,25 @@ function updateTestResult(_id, suite_name, test_name, res) {
 							tests[i].status = "FAILED";
 							tests[i].testObject[j-preconditionsLength].status = res[j].result;
 							tests[i].testObject[j-preconditionsLength].error = res[j].error;
+							object[j-preconditionsLength].status = res[j].result;
+							object[j-preconditionsLength].error = res[j].error;
+							
+							if (tests[i].testObject[j-preconditionsLength].inputType == 'regex' || tests[i].testObject[j-preconditionsLength].inputType == 'int_range' || tests[i].testObject[j-preconditionsLength].inputType == 'num_range') {
+							object[j-preconditionsLength].input = res[j].input;
+						}
+						
 							pos = j - preconditionsLength;
 							break;
 						}
 						
 						tests[i].testObject[j-preconditionsLength].status = res[j].result;
 						tests[i].testObject[j-preconditionsLength].error = res[j].error;
+						object[j-preconditionsLength].status = res[j].result;
+						object[j-preconditionsLength].error = res[j].error;
+						
+						if (tests[i].testObject[j-preconditionsLength].inputType == 'regex' || tests[i].testObject[j-preconditionsLength].inputType == 'int_range' || tests[i].testObject[j-preconditionsLength].inputType == 'num_range') {
+							object[j-preconditionsLength].input = res[j].input;
+						}
 					}
 					
 					if (tests[i].postconditions.length != 0 && preconditionStatus && tests[i].status != 'FAILED') {
@@ -1930,11 +2127,23 @@ function updateTestResult(_id, suite_name, test_name, res) {
 						for (var k = pos + 1; k < tests[i].testObject.length; k++) {
 							tests[i].testObject[k].status = "PENDING";
 							tests[i].testObject[k].error = "";
+							object[k].status = "PENDING";
+							object[k].error = "";
+							
+							if (tests[i].testObject[k].inputType == 'regex' || tests[i].testObject[k].inputType == 'int_range' || tests[i].testObject[k].inputType == 'num_range') {
+								object[k].input = res[j].input;
+							}
 						}
 					} else if (!preconditionStatus) {
 						for (var k = 0; k < tests[i].testObject.length; k++) {
 							tests[i].testObject[k].status = "PENDING";
 							tests[i].testObject[k].error = "";
+							object[k].status = "PENDING";
+							object[k].error = "";
+							
+							if (tests[i].testObject[k].inputType == 'regex' || tests[i].testObject[k].inputType == 'int_range' || tests[i].testObject[k].inputType == 'num_range') {
+								object[k].input = res[j].input;
+							}
 						}
 					}
 					
@@ -1942,8 +2151,9 @@ function updateTestResult(_id, suite_name, test_name, res) {
 						"id": randomID(20, "aA0"),
 						"date": tests[i].tested.date,
 						"time": tests[i].tested.time,
+						"week": week,
 						"status": tests[i].status,
-						"test": tests[i].testObject,
+						"test": object,
 						"preconditions": tests[i].preconditions,
 						"postconditions": tests[i].postconditions
 					};
@@ -1999,6 +2209,7 @@ function updateTestSettings(_id, suite_name, test_name, info) {
 					if (tests[i].testName == test_name && tests[i].suiteName == suite_name) {
 						tests[i].testName = info.testName;
 						tests[i].suiteName = info.suiteName;
+						tests[i].runs = info.runs;
 						break;
 					}
 				}
@@ -2119,6 +2330,13 @@ function updateSuiteHistory(_id, suite_name) {
 			var passed = 0;
 			var failed = 0;
 			var time;
+			var tdt = new Date(d.valueOf());
+			var dayn = (d.getDay() + 6) % 7;
+			tdt.setDate(tdt.getDate() - dayn + 3);
+			var firstThursday = tdt.valueOf();
+			tdt.setMonth(0, 1);
+			if (tdt.getDay() !== 4) tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+			var week = 1 + Math.ceil((firstThursday - tdt) / 604800000);
 			
 			if (d.getMinutes() < 10) {
 				time = d.getHours() + ':0' + d.getMinutes();
@@ -2142,7 +2360,8 @@ function updateSuiteHistory(_id, suite_name) {
 					var set = {
 						"id": randomID(20, "aA0"),
 						"date": d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear(),
-						"time": time, 
+						"time": time,
+						"week": week,
 						"status": {
 							"passed": passed,
 							"failed": failed
