@@ -43,7 +43,6 @@ export class EditStepsComponent implements OnInit {
        } catch (err) {
          this.testObject = test.testObject;
        }
-
     });
 
     this.postsService.getSuiteNames(this.currentUser._id).subscribe(suites => {

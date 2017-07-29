@@ -39,6 +39,7 @@
     <p>Below is a full listing of your test suites.</p>
     <h3 *ngIf="stats !== undefined"><span class="label label-primary">{{stats.suites}} Suites</span> <span class="label label-info">{{stats.tests}} Tests</span> <span class="label label-success">{{stats.passing}} Passing</span> <span class="label label-danger">{{stats.failing}} Failing</span>        <span class="label label-default">{{stats.not_tested}} Not Tested</span>
     </h3>
+    <h3 *ngIf="stats !== undefined"><span class="label label-primary">{{stats.last_week_passed}}/{{stats.week_runs}} Passed Last Week</span> <span class="label label-primary">{{stats.all_time_passed}}/{{stats.all_time_runs}} All Time Passed</span></h3>
     <hr>
 
     <table class="table">
@@ -53,6 +54,8 @@
             <tr *ngFor="let suite of suites">
                 <td>
                     <h4><a class="nav-link" (click)="onClickListener(suite.name)" style="cursor: pointer;"><b>{{suite.name}}</b></a></h4>
+                    <h4><span class="label label-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true "></span> {{suite.passed}} Passing</span> <span class="label label-danger"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true "></span>                        {{suite.failed}} Failing</span> <span class="label label-default"><span class="glyphicon glyphicon-info-sign" aria-hidden="true "></span> {{suite.not_tested}} Not tested</span>
+                    </h4>
                 </td>
                 <td>
                     <h4 align="center" *ngIf="suite.schedule == 'none'">No Schedule</h4>

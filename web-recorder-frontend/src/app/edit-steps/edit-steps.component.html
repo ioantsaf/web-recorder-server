@@ -248,8 +248,32 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-7" *ngIf="t.type == 'change' || t.type == 'select' || t.type == 'assert' || t.type == 'text-equal' || t.type == 'text-not-equal' || t.type == 'text-contain' || t.type == 'text-not-contain'">
+                <div class="col-md-7" *ngIf="t.type == 'select' || t.type == 'assert' || t.type == 'text-equal' || t.type == 'text-not-equal' || t.type == 'text-contain' || t.type == 'text-not-contain'">
                     <input type="text" class="form-control" placeholder="Input" [(ngModel)]="t.input">
+                </div>
+                <div class="col-md-2" *ngIf="t.type == 'change'">
+                    <div class="form-group">
+                        <select class="selectpicker form-control" [(ngModel)]="t.inputType" #inputType="ngModel">
+                            <optgroup label="Input type: ">
+                                <option value="freetext">Free text</option>
+                                <option value="regex">Regular expression</option>
+                                <option value="int_range">Integer range</option>
+                                <option value="num_range">Float range</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-5" *ngIf="t.type == 'change' && t.inputType == 'freetext'">
+                    <input type="text" class="form-control" placeholder="Input" [(ngModel)]="t.input">
+                </div>
+                <div class="col-md-5" *ngIf="t.type == 'change' && t.inputType == 'regex'">
+                    <input type="text" class="form-control" placeholder="Regular Expression" [(ngModel)]="t.regex">
+                </div>
+                <div class="col-md-2" *ngIf="t.type == 'change' && (t.inputType == 'int_range' || t.inputType == 'num_range')">
+                    <input type="text" class="form-control" placeholder="From" [(ngModel)]="t.from">
+                </div>
+                <div class="col-md-2" *ngIf="t.type == 'change' && (t.inputType == 'int_range' || t.inputType == 'num_range')">
+                    <input type="text" class="form-control" placeholder="To" [(ngModel)]="t.to">
                 </div>
                 <div class="col-md-7" *ngIf="t.type == 'keypress'">
                     <div class="form-group">
