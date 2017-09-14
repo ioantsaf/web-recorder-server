@@ -96,8 +96,9 @@
                 <p style="font-size: 112%">In the left corner there is a link "Apply to all", that implements any change that have been made in the step's identifier in all tests that have the same element and URL. Down from it there is an input that you can type any description
                     about the specific step.</p><br>
                 <p align="center"><img src="./assets/edit_steps_target.png" width="850" height="542"></p><br>
-                <p style="font-size: 112%">Certain actions will present additional fields for the step. For instance, an "Assign" step will present a field for inputing the value to assign to the element you are targeting. A "Keypress" step will allow you to choose from a number
-                    of keystrokes like "Enter", "Backspace" and "Escape". Each step action has it's own set of fields related to the action it's performing.</p><br>
+                <p style="font-size: 112%">Certain actions will present additional fields for the step. For instance, an "Assign" step will present a field for inputing the value to assign to the element you are targeting. Also a drowdown menu will apear with values "Free Text",
+                    "Regular Expression", "Integer Range" and "Float range". These options can modify the input value with a text that user enters, a regular expression or an integer or float in a scepcific range. A "Keypress" step will allow you to choose
+                    from a number of keystrokes like "Enter", "Backspace" and "Escape". Each step action has it's own set of fields related to the action it's performing.</p><br>
                 <p align="center"><img src="./assets/edit_steps_input.png" width="850"></p><br>
                 <p style="font-size: 112%">Furthermore there is a search input that you can type the step that you want to find. The keywords are based on the identity of the step and it's description.</p><br>
                 <p align="center"><img src="./assets/edit_steps_search.png" width="850"></p><br><br>
@@ -396,6 +397,48 @@
                     </div>
                     <div class="panel-body">
                         <img src="./assets/get_suiteNames.png">
+                    </div>
+                </div><br>
+
+                <h3><b>Get Suite Stats</b></h3>
+                <p style="font-size: 108%">Fetch an array of statistics of suite runs.</p>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Request</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <h4><code>GET</code>&nbsp;&nbsp;{{serverURL}}&lt;id&gt;/suites/&lt;suite&gt;/stats</h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Parameters</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-3" align="right">
+                                <h4><code>id</code></h4>
+                            </div>
+                            <div class="col-md-9">
+                                <h4>Your account unique ID</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" align="right">
+                                <h4><code>suite</code></h4>
+                            </div>
+                            <div class="col-md-9">
+                                <h4>The name of the suite to fetch</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Response</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <img src="./assets/get_suiteStats.png">
                     </div>
                 </div><br>
 
@@ -922,6 +965,56 @@
                     </div>
                 </div><br>
 
+                <h3><b>Get Test Stats</b></h3>
+                <p style="font-size: 108%">Fetch an array of statistics of specific test runs.</p>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Request</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <h4><code>GET</code>&nbsp;&nbsp;{{serverURL}}&lt;id&gt;/suites/&lt;suite&gt;/tests/&lt;test&gt;/stats</h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Parameters</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-3" align="right">
+                                <h4><code>id</code></h4>
+                            </div>
+                            <div class="col-md-9">
+                                <h4>Your account unique ID</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" align="right">
+                                <h4><code>suite</code></h4>
+                            </div>
+                            <div class="col-md-9">
+                                <h4>The name of the suite</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" align="right">
+                                <h4><code>test</code></h4>
+                            </div>
+                            <div class="col-md-9">
+                                <h4>The name of the test</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><b>Response</b></h3>
+                    </div>
+                    <div class="panel-body">
+                        <img src="./assets/get_testStats.png">
+                    </div>
+                </div><br>
+
                 <h3><b>Get Test History</b></h3>
                 <p style="font-size: 108%">Fetch the history of a single test.</p>
                 <div class="panel panel-default">
@@ -1298,6 +1391,40 @@
                             </div>
                             <div class="col-md-9">
                                 <h4>Target an element using it's CSS</h4>
+                            </div>
+                        </div>
+                        <hr>
+                        <h4><b>InputType</b></h4>
+                        <div class="row">
+                            <div class="col-md-3" align="right">
+                                <h4><code>freetext</code></h4>
+                            </div>
+                            <div class="col-md-9">
+                                <h4>Assign user's text to input</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" align="right">
+                                <h4><code>regex</code></h4>
+                            </div>
+                            <div class="col-md-9">
+                                <h4>Assign a regular expression to input</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" align="right">
+                                <h4><code>int_range</code></h4>
+                            </div>
+                            <div class="col-md-9">
+                                <h4>Assign an integer in specific range to input</h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" align="right">
+                                <h4><code>num_range</code></h4>
+                            </div>
+                            <div class="col-md-9">
+                                <h4>Assign a float in specific range to input</h4>
                             </div>
                         </div>
                     </div>
@@ -1884,7 +2011,7 @@
 
 <br><br><br><br><br><br><br><br><br>
 <div class="footer">
-    <p style="font-size: 110%">Web Recorder - Automated Website Testing and Monitoring - &copy; 2017 Created By Dimitris Niras.</p>
+    <p style="font-size: 110%">Web Recorder - Automated Website Testing and Monitoring - &copy; 2017 Created By <a href="https://www.linkedin.com/in/nirasdimitris/" target="_blank" style="color:#888585;">Dimitriοs Niras</a></p>
     <p style="font-size: 90%">
         Icons made by
         <a href="http://www.flaticon.com/authors/pixel-buddha" title="Pixel Buddha" target="_blank" style="color:#888585;">
