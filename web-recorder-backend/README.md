@@ -82,6 +82,16 @@ $ sudo systemctl enable mongodb
 #### Install Packages
 After selenium and MongoDB installation you have to run `$ npm install` in backend folder in order to install all the required packages.
 
+#### Declare Environment Variables
+Before you run Web Recorde's API you have to declare the Enviroment Variables that are necessary for the API safety. Specifically these are the Environment Variables that you need to declare:
+
+|  Environment Variable  | Description |
+|-------------------|---------------------------------------------------------------------|
+|  MAILGUN_API_KEY  |  The API key of your Mailgun's personal account for mailgun.js framework  |
+|  MAILGUN_DOMAIN  |  The domain of your Mailgun's personal account for mailgun.js framework  |
+|  WEB_RECORDER_CONNECTION_STRING  |  The connection string of your MongoDB instance  |
+|  JWT_SECRET_KEY  |  The secret key that used for JWT user data encryption  |
+
 #### Running
 Now you can run Web Recorder's API after having installed all required packages. In order to run API type this command:
 ```
@@ -123,6 +133,6 @@ After the successful docker installation and before you install and run the Dock
 #### Running
 Having installed MongoDB, you can now run the Web Recorder's backend Docker image typing this command:
 ```
-$ sudo docker run -d -p <your-port>:4000 --name <your-container-name> webrecordergr/web-recorder:backend
+$ docker run -d -e MAILGUN_API_KEY=<your-mailgun-api-key> -e MAILGUN_DOMAIN-<your-mailgun-domain> -e WEB_RECORDER_CONNECTION_STRING=<your-web-recorder-connection-string> -e JWT_SECRET_KEY=<your-jwt-secret-key> -p <your-port>:4000 -v <your-folder-path>/://usr/src/web-recorder-backend/ --name <your-container-name> webrecordergr/web-recorder-backend
 ```
 It is recommended to run your backend's image on port 4000 in order to connect directly with Web Recorder's frontend without any modification.
