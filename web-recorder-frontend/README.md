@@ -45,7 +45,7 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AuthService {
-  serverURL = 'http://localhost:4000/';
+  serverURL = 'http://snf-766614.vm.okeanos.grnet.gr:4000/';
 ...
 ```
 and on `src/app/services/posts.service.ts` file:
@@ -56,7 +56,7 @@ import { User } from '../user';
 
 @Injectable()
 export class PostsService {
-  serverURL = 'http://localhost:4000/';
+  serverURL = 'http://snf-766614.vm.okeanos.grnet.gr:4000/';
 ...
 ```
 
