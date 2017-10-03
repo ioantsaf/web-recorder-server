@@ -59,7 +59,9 @@
     <hr>
 
     <div *ngIf="running == true">
-        <h2><b>Test is running...</b></h2>
+        <h2>
+            <fa name="cog" animation="spin"></fa><b>Test is running</b>
+        </h2>
     </div>
 
     <h2 *ngIf="preconditions !== undefined && preconditions.length !== 0 && running == false">Preconditions</h2>

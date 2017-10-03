@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PostsService } from '../services/posts.service';
 import { AuthService } from '../services/auth.service';
 import { User } from '../user';
+import { AngularFontAwesomeModule } from 'angular-font-awesome/angular-font-awesome';
 
 @Component({
   selector: 'app-single-test',

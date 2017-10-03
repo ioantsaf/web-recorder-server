@@ -291,7 +291,7 @@
                 </div>
             </div>
             <div>
-                <a (click)="applyToAll(i)" style="cursor: pointer; color: #888585;">Apply to all</a>
+                <a (click)="applyToAllModal(i)" style="cursor: pointer; color: #888585;">Apply to all</a>
                 <div *ngIf="applyToAllMessage && applyToAllIndex == i && applyToAllStatus == 'success'" style="color: green;" class="help-block">
                     {{applyToAllMessage}}
                 </div>
@@ -435,3 +435,16 @@
         </a>
     </p>
 </div>
+
+<modal #modal>
+    <modal-header [show-close]="true">
+        <h4 class="modal-title">Apply this change to all tests?</h4>
+    </modal-header>
+    <modal-body>
+        Are you sure you want to apply this change to all tests in the suite? This operation cannot be undone.
+    </modal-body>
+    <modal-footer>
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="modal.dismiss()">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="applyToAll(i)">Yes, apply changes</button>
+    </modal-footer>
+</modal>

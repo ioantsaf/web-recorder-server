@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostsService } from '../services/posts.service';
 import { AuthService } from '../services/auth.service';
 import { User } from '../user';
 import { TestObject } from '../test-object';
+import { BsModalModule } from 'ng2-bs3-modal';
 
 @Component({
   selector: 'app-edit-steps',
@@ -24,6 +25,10 @@ export class EditStepsComponent implements OnInit {
   suites: any[];
   filter: TestObject = new TestObject();
   search = 'id';
+  applyIndex: number;
+
+  @ViewChild('modal')
+  modal: BsModalModule;
 
   // tslint:disable-next-line:max-line-length
   constructor(private postsService: PostsService, private router: Router, route: ActivatedRoute, private authenticationService: AuthService) {
@@ -114,16 +119,19 @@ export class EditStepsComponent implements OnInit {
     this.postconditions.splice(index, 1);
   }
 
-  applyToAll(index: number) {
-    this.postsService.updateStepsID(this.currentUser._id, this.suiteName, this.testName, index, this.testObject[index].id).subscribe(() => {
+  applyToAll() {
+    // tslint:disable-next-line:max-line-length
+    this.postsService.updateStepsID(this.currentUser._id, this.suiteName, this.testName, this.applyIndex, this.testObject[this.applyIndex].id).subscribe(() => {
       this.applyToAllStatus = 'success';
       this.applyToAllMessage = 'Changes successfully applied to all tests';
-      this.applyToAllIndex = index;
+      this.applyToAllIndex = this.applyIndex;
     }, error => {
       this.applyToAllStatus = 'fail';
       this.applyToAllMessage = 'Failed to apply changes to all tests';
-      this.applyToAllIndex = index;
+      this.applyToAllIndex = this.applyIndex;
     });
+
+    this.modal.close();
   }
 
   findTestPreconditionNames(suiteName: string, index: number) {
@@ -140,6 +148,11 @@ export class EditStepsComponent implements OnInit {
             return a.localeCompare(b);
       });
     });
+  }
+
+  applyToAllModal(index: number) {
+    this.applyIndex = index;
+    this.modal.open();
   }
 
   logout() {

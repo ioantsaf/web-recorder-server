@@ -30,6 +30,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { Ng2Bs3ModalModule } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { SearchStepsPipe } from './search-steps.pipe';
+import { AngularFontAwesomeModule } from 'angular-font-awesome/angular-font-awesome';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { SearchStepsPipe } from './search-steps.pipe';
     FormsModule,
     HttpModule,
     routing,
-    Ng2Bs3ModalModule
+    Ng2Bs3ModalModule,
+    AngularFontAwesomeModule
   ],
   providers: [
     AuthGuard,

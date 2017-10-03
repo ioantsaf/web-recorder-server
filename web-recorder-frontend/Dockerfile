@@ -19,4 +19,3 @@ RUN ng build --prod --aot
 
 EXPOSE 8080
 CMD [ "node", "server.js" ]
-

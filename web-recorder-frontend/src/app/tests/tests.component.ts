@@ -77,7 +77,7 @@ export class TestsComponent implements OnInit {
   }
 
   runTest(testName, index) {
-    this.tests[index].status = 'RUNNING...';
+    this.tests[index].status = 'RUNNING';
 
     this.postsService.getTestResult(this.currentUser._id, this.suiteName, testName).subscribe(result => {
       this.postsService.updateTestResult(this.currentUser._id, this.suiteName, testName, result).subscribe(() => {

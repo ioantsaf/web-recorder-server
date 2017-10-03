@@ -13,4 +13,3 @@ COPY . /usr/src/web-recorder-backend
 
 EXPOSE 4000
 CMD [ "npm", "start" ]
-

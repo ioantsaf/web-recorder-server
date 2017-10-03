@@ -77,8 +77,12 @@
                     </p>
                 </td>
                 <td class="no-wrap text-center" *ngIf="running == false">
-                    <div *ngIf="test.status == 'NOT TESTED' || test.status == 'RUNNING...'" style="color: grey;">
+                    <div *ngIf="test.status == 'NOT TESTED'" style="color: grey;">
                         <h5><b>{{test.status}}</b></h5>
+                    </div>
+                    <div *ngIf="test.status == 'RUNNING'" style="color: grey;">
+                        <h5>
+                            <fa name="cog" animation="spin"></fa><b>{{test.status}}</b></h5>
                     </div>
                     <div *ngIf="test.status == 'PASSED'" style="color: green;">
                         <h5><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <b>{{test.status}}</b></h5>
@@ -109,7 +113,9 @@
                 </td>
             </tr>
             <div *ngIf="running == true">
-                <h2><b>Suite is running...</b></h2>
+                <h2>
+                    <fa name="cog" animation="spin"></fa><b>Suite is running</b>
+                </h2>
             </div>
         </tbody>
     </table>
