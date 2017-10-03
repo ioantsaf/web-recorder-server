@@ -8,6 +8,6 @@ app.get('*', function(req, res) {
 });
 
 app.listen(80, function() {
-    console.log('Frontend app listening on port 8080!');
+    console.log('Frontend app listening on port 80!');
 });
 
