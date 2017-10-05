@@ -5,7 +5,7 @@ var Q = require('q');
 var mongo = require('mongoskin');
 var webdriver = require("selenium-webdriver");
 var chromeDriver = require('selenium-webdriver/chrome');
-var options = new chromeDriver.Options().addArguments('headless', 'disable-gpu', 'window-size=1080, 1920');
+var options = new chromeDriver.Options().addArguments('headless', 'disable-gpu', 'window-size=1080, 1920', 'no-sandbox');
 var randomID = require('random-id');
 var CronJob = require('cron').CronJob;
 var Promise = require('bluebird');
