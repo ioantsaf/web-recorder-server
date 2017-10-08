@@ -7,7 +7,7 @@ app.get('*', function(req, res) {
   res.sendFile(__dirname + '/dist/' + 'index.html')
 });
 
-app.listen(80, function() {
-    console.log('Frontend app listening on port 80!');
+app.listen(8080, function() {
+    console.log('Frontend app listening on port 8080!');
 });
 
