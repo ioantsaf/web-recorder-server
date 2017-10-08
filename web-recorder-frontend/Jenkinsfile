@@ -14,8 +14,9 @@ node {
         dir ('web-recorder-frontend') {
             withEnv(['NODE_ENV=development']) {
                 nodejs(nodeJSInstallationName: 'recent node') {
-                    sh 'npm install -g bower'
+                    sh 'npm install -g @angular/cli'
                     sh 'npm install'
+                    sh 'ng build --prod --aot'
                 }
             }
         }
