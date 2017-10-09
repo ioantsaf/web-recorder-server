@@ -23,13 +23,13 @@ node {
     }
 
     dir ('web-recorder-frontend') {
-        stage('Test') {
+        /*stage('Test') {
             withEnv(['NODE_ENV=development']) {
                 nodejs(nodeJSInstallationName: 'recent node') {
                     sh 'npm test'
                 }
             }
-        }
+        }*/
 
         stage('SonarQube analysis') {
             // The SonarQube server requires at least 2GB of RAM to run efficiently and 1GB of free RAM for the OS.
