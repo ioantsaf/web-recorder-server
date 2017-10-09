@@ -47,7 +47,10 @@ node {
                     playbook: 'ansible/deploy-app-staging.yml',
                     sudoUser: null,
                     extraVars: [
-                        "app_subdir":"web-recorder-backend"
+                        "app_subdir":"web-recorder-backend",
+                        "MAILGUN_API_KEY":"1234",
+                        "MAILGUN_DOMAIN":"1234",
+                        "JWT_SECRET_KEY":"1234"
                     ]
                 )
             }
@@ -71,7 +74,10 @@ node {
                     playbook: 'ansible/deploy-app-production.yml',
                     sudoUser: null,
                     extraVars: [
-                        "app_subdir":"web-recorder-backend"
+                        "app_subdir":"web-recorder-backend",
+                        "MAILGUN_API_KEY":"1234",
+                        "MAILGUN_DOMAIN":"1234",
+                        "JWT_SECRET_KEY":"1234"
                     ]
                 )
             }
