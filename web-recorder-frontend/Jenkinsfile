@@ -51,13 +51,13 @@ node {
         stage('Staging deploy') {
             ansiColor('xterm') {
                 ansiblePlaybook(
-                        colorized: true,
-                        inventory: 'ci/ansible/hosts',
-                        playbook: 'ci/ansible/deploy-app-staging.yml',
-                        sudoUser: null,
-                        extraVars {
-                            extraVar("app_port", "8080", false)
-                        }
+                    colorized: true,
+                    inventory: 'ci/ansible/hosts',
+                    playbook: 'ci/ansible/deploy-app-staging.yml',
+                    sudoUser: null,
+                    extraVars: [
+                        "app_port":"8080"
+                    ]
                 )
             }
         }
@@ -76,13 +76,13 @@ node {
         stage('Production deploy') {
             ansiColor('xterm') {
                 ansiblePlaybook(
-                        colorized: true,
-                        inventory: 'ci/ansible/hosts',
-                        playbook: 'ci/ansible/deploy-app-production.yml',
-                        sudoUser: null,
-                        extraVars {
-                            extraVar("app_port", "8080", false)
-                        }
+                    colorized: true,
+                    inventory: 'ci/ansible/hosts',
+                    playbook: 'ci/ansible/deploy-app-production.yml',
+                    sudoUser: null,
+                    extraVars: [
+                        "app_port":"8080"
+                    ]
                 )
             }
         }
