@@ -47,22 +47,21 @@ node {
                 }
             }
         }
-
-        stage('Staging deploy') {
-            ansiColor('xterm') {
-                ansiblePlaybook(
-                    colorized: true,
-                    inventory: 'ci/ansible/hosts',
-                    playbook: 'ci/ansible/deploy-app-staging.yml',
-                    sudoUser: null,
-                    extraVars: [
-                        "app_port":"8080"
-                    ]
-                )
-            }
-        }
     }
 
+    stage('Staging deploy') {
+        ansiColor('xterm') {
+            ansiblePlaybook(
+                colorized: true,
+                inventory: 'ci/ansible/hosts',
+                playbook: 'ci/ansible/deploy-app-staging.yml',
+                sudoUser: null,
+                extraVars: [
+                    "app_port":"8080"
+                ]
+            )
+        }
+    }
 }
 
 stage('Production deploy approval') {
@@ -72,19 +71,17 @@ stage('Production deploy approval') {
 }
 
 node {
-    dir ('web-recorder-frontend') { 
-        stage('Production deploy') {
-            ansiColor('xterm') {
-                ansiblePlaybook(
-                    colorized: true,
-                    inventory: 'ci/ansible/hosts',
-                    playbook: 'ci/ansible/deploy-app-production.yml',
-                    sudoUser: null,
-                    extraVars: [
-                        "app_port":"8080"
-                    ]
-                )
-            }
+    stage('Production deploy') {
+        ansiColor('xterm') {
+            ansiblePlaybook(
+                colorized: true,
+                inventory: 'ci/ansible/hosts',
+                playbook: 'ci/ansible/deploy-app-production.yml',
+                sudoUser: null,
+                extraVars: [
+                    "app_port":"8080"
+                ]
+            )
         }
     }
 }
