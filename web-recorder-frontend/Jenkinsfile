@@ -58,7 +58,11 @@ node {
                 sudoUser: null,
                 extraVars: [
                     "app_port":"8080",
-                    "app_subdir":"web-recorder-frontend"
+                    "app_subdir":"web-recorder-frontend",
+                    "MAILGUN_API_KEY":env.staging_MAILGUN_API_KEY,
+                    "MAILGUN_DOMAIN":env.staging_MAILGUN_DOMAIN,
+                    "WEB_RECORDER_CONNECTION_STRING":env.staging_WEB_RECORDER_CONNECTION_STRING,
+                    "JWT_SECRET_KEY":env.staging_JWT_SECRET_KEY
                 ]
             )
         }
@@ -81,7 +85,11 @@ node {
                 sudoUser: null,
                 extraVars: [
                     "app_port":"8080",
-                    "app_subdir":"web-recorder-frontend"
+                    "app_subdir":"web-recorder-frontend",
+                    "MAILGUN_API_KEY":env.prod_MAILGUN_API_KEY,
+                    "MAILGUN_DOMAIN":env.prod_MAILGUN_DOMAIN,
+                    "WEB_RECORDER_CONNECTION_STRING":env.prod_WEB_RECORDER_CONNECTION_STRING,
+                    "JWT_SECRET_KEY":env.prod_JWT_SECRET_KEY
                 ]
             )
         }

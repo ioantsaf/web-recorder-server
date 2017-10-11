@@ -24,7 +24,7 @@
     environment: 
       MAILGUN_API_KEY: '{{ MAILGUN_API_KEY }}'
       MAILGUN_DOMAIN: '{{ MAILGUN_DOMAIN }}'
-      WEB_RECORDER_CONNECTION_STRING: mongodb://localhost/web-recorder
+      WEB_RECORDER_CONNECTION_STRING: "{{ WEB_RECORDER_CONNECTION_STRING | default('mongodb://localhost/web-recorder') }}"
       JWT_SECRET_KEY: '{{ JWT_SECRET_KEY }}'
 
   - name: Restart app
