@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AuthService {
-  serverURL = 'http://snf-766614.vm.okeanos.grnet.gr:4000/';
+  serverURL = process.env.BACKEND_URL;
 
   constructor(private http: Http, private router: Router) { }
 

@@ -14,7 +14,7 @@ var domain = process.env.MAILGUN_DOMAIN;
 var mailgun = require('mailgun-js')({ apiKey: api_key, domain: domain });
 var RandExp = require('randexp');
 var db = mongo.db(process.env.WEB_RECORDER_CONNECTION_STRING, { native_parser: true });
-var websiteURL = 'http://snf-766614.vm.okeanos.grnet.gr/';
+var websiteURL = process.env.FRONTEND_URL;
 db.bind('users');
 
 var service = {};
