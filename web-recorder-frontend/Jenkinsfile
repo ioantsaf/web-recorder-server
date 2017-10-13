@@ -18,7 +18,7 @@ node {
                     sh 'npm install'
                     sh 'chmod u+x prebuild.js'
                     sh 'npm run-script prebuild'
-                    sh 'ng build --aot'
+                    sh 'ng build --prod --aot --environment=staging'
                 }
             }
         }
@@ -76,7 +76,7 @@ stage('Production deploy approval') {
 
 node {
     stage('Production deploy') {
-        sh 'ng build --prod --aot'
+        sh 'ng build --prod --aot --environment=prod'
         ansiColor('xterm') {
             ansiblePlaybook(
                 colorized: true,

@@ -22,14 +22,14 @@ var environmentTemplate, output;
 
 // Load template file
 environmentTemplate = fs.readFileSync(
-  path.join(environmentFilesDirectory, 'environment.ts.template'),
+  path.join(environmentFilesDirectory, 'environment.staging.ts.template'),
   {encoding: 'utf-8'}
 );
 
 // Generate output data
 output = ejs.render(environmentTemplate, Object.assign({}, defaultEnvValues, JSON.parse(process.env.staging)));
 // Write environment file
-fs.writeFileSync(path.join(environmentFilesDirectory, 'environment.ts'), output);
+fs.writeFileSync(path.join(environmentFilesDirectory, 'environment.staging.ts'), output);
 
 // Load template file
 environmentTemplate = fs.readFileSync(
