@@ -16,7 +16,9 @@ node {
                 nodejs(nodeJSInstallationName: 'recent node') {
                     sh 'npm install -g @angular/cli'
                     sh 'npm install'
-                    sh 'ng build --prod --aot'
+                    sh 'chmod u+x prebuild.js'
+                    sh 'npm run-script prebuild'
+                    sh 'ng build --aot'
                 }
             }
         }
@@ -74,6 +76,7 @@ stage('Production deploy approval') {
 
 node {
     stage('Production deploy') {
+        sh 'ng build --prod --aot'
         ansiColor('xterm') {
             ansiblePlaybook(
                 colorized: true,

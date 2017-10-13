@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { User } from '../user';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class PostsService {
-  serverURL = process.env.BACKEND_URL;
+  serverURL = environment.backendUrl;
 
   constructor(private http: Http) { }
 

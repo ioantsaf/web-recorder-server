@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-documentation',
@@ -8,8 +9,8 @@ import { Component, OnInit } from '@angular/core';
 export class DocumentationComponent implements OnInit {
   pageId = 'Getting Started';
   headline = 'Documentation';
-  serverURL = process.env.BACKEND_URL;
-  websiteURL = process.env.FRONTEND_URL;
+  serverURL = environment.backendUrl;
+  websiteURL = environment.frontendUrl;
 
   constructor() { }
 

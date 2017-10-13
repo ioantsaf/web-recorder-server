@@ -1,0 +1,5 @@
+export const environment = {
+  production: false,
+  backendUrl: '<%= BACKEND_URL %>',
+  frontendUrl: '<%= FRONTEND_URL %>'
+};

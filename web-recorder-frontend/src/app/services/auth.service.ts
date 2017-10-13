@@ -3,10 +3,11 @@ import { Http, Headers, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthService {
-  serverURL = process.env.BACKEND_URL;
+  serverURL = environment.backendUrl;
 
   constructor(private http: Http, private router: Router) { }
 
