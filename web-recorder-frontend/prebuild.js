@@ -27,7 +27,7 @@ environmentTemplate = fs.readFileSync(
 );
 
 // Generate output data
-output = ejs.render(environmentTemplate, Object.assign({}, defaultEnvValues, process.env.staging));
+output = ejs.render(environmentTemplate, Object.assign({}, defaultEnvValues, JSON.parse(process.env.staging)));
 // Write environment file
 fs.writeFileSync(path.join(environmentFilesDirectory, 'environment.ts'), output);
 
@@ -38,7 +38,7 @@ environmentTemplate = fs.readFileSync(
 );
 
 // Generate output data
-output = ejs.render(environmentTemplate, Object.assign({}, defaultEnvValues, process.env.prod));
+output = ejs.render(environmentTemplate, Object.assign({}, defaultEnvValues, JSON.parse(process.env.prod)));
 // Write environment file
 fs.writeFileSync(path.join(environmentFilesDirectory, 'environment.prod.ts'), output);
 
