@@ -1,7 +1,20 @@
 #!groovy
 
+import groovy.json.JsonSlurper
+import groovy.json.JsonException
+
 node {
     stage('Preparation') {
+
+        //env.staging='{"BACKEND_URL":"backend_host:4000/","FRONTEND_URL":"frontend_host:8080/"}'
+        //env.prod='{"BACKEND_URL":"backend_host:4000/","FRONTEND_URL":"frontend_host:8080/"}'
+        try {
+            (new JsonSlurper()).parseText(env.staging)
+            (new JsonSlurper()).parseText(env.prod)
+        } catch (JsonException | IllegalArgumentException e) {
+             error("Please define the staging and prod environment variables, using the Environment Injector Plugin, as JSON-formatted string, e.g. staging={\"BACKEND_URL\":\"backend_host:4000/\",\"FRONTEND_URL\":\"frontend_host:8080/\"}")
+        }
+
         deleteDir()
         checkout scm
         sh 'git submodule update --init --recursive'
