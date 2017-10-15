@@ -89,7 +89,13 @@ stage('Production deploy approval') {
 
 node {
     stage('Production deploy') {
-        sh 'ng build --prod --aot --environment=prod'
+        dir ('web-recorder-frontend') {
+            withEnv(['NODE_ENV=development']) {
+                nodejs(nodeJSInstallationName: 'recent node') {
+                    sh 'ng build --prod --aot --environment=prod'
+                }
+            }
+        }
         ansiColor('xterm') {
             ansiblePlaybook(
                 colorized: true,
